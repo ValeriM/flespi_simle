@@ -22,7 +22,8 @@ namespace flespi_simle
                 "2. Get device logs records",
                 "3. Get device messages (Can take a long time!)",
                 "4. Get settings collection",
-                "5. Get device telemetry"
+                "5. Get device telemetry",
+                "6. Исчо!"
             };
             ConsoleKeyInfo ch;
             do

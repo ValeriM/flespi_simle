@@ -92,7 +92,7 @@ namespace flespi_simle
                     {
                         case HttpStatusCode.NotFound:
                             //response = null;
-                            Console.WriteLine("Что-то однако пошло не так!");
+                            Console.WriteLine("Что-то пошло не так!");
                             break;
 
                         default:

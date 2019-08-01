@@ -24,7 +24,8 @@ namespace flespi_simle
                 "4. Get settings collection",
                 "5. Get device telemetry",
                 "6. Исчо!",
-                "7. Seven"
+                "7. Seven",
+                "8. Эээ... восемь, кажись"
             };
             ConsoleKeyInfo ch;
             do

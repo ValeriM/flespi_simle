@@ -14,9 +14,9 @@ namespace flespi_simle
 {
     class Program
     {
-        static string token = "Authorization: FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";
+        static readonly string token = "Authorization: FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";
         //token = "Authorization: FlespiToken UIy8bexWRWLVX3H3yJFCkycRTNI3xRognMeoOBbvlKf8EK20kvrsRraz4GsqnGwB";
-        static string log = "flespi_simle.txt";
+        static readonly string log = "flespi_simle.txt";
         static void Main(string[] args)
         {
             Print(log, "Start " + DateTime.Now.ToString());
@@ -61,7 +61,8 @@ namespace flespi_simle
                     default: Console.WriteLine("Что это было?"); break;
                 }
             } while (ch.Key != ConsoleKey.Escape);
-            test1();
+            //test1();
+            test2();
         }
         /**/
         static void test1()
@@ -69,19 +70,40 @@ namespace flespi_simle
             string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
+            string fileName = "json1.txt";
 
             foreach(var a in dobj["result"])
             {
-                Print("json.txt", a["cid"].ToString());
-                Print("json.txt", a["configuration"]["ident"]);
-                Print("json.txt", a["device_type_id"].ToString());
-                Print("json.txt", a["id"].ToString());
-                Print("json.txt", a["ident"].ToString());
-                Print("json.txt", a["messages_ttl"].ToString());
-                Print("json.txt", a["name"].ToString());
-                Print("json.txt", a["phone"].ToString());
+                Print(fileName, a["cid"].ToString());
+                Print(fileName, a["configuration"]["ident"]);
+                Print(fileName, a["device_type_id"].ToString());
+                Print(fileName, a["id"].ToString());
+                Print(fileName, a["ident"].ToString());
+                Print(fileName, a["messages_ttl"].ToString());
+                Print(fileName, a["name"].ToString());
+                Print(fileName, a["phone"].ToString());
             }
-        }        
+        }
+        /**/
+        static void test2()
+        {
+            string json = "{\"result\":[{\"event_code\":300,\"event_origin\":\"gw\\/devices\\/361201\",\"event_text\":\"85.140.0.165\\/connected\",\"id\":361201,\"ident\":\"865905020671073\",\"source\":\"85.140.0.165\",\"timestamp\":1564730883.623162,\"transport\":\"tcp\"},{\"close_code\":3,\"duration\":10892,\"event_code\":301,\"event_origin\":\"gw\\/devices\\/361201\",\"event_text\":\"85.140.0.165\\/disconnected\",\"id\":361201,\"ident\":\"865905020671073\",\"msgs\":3022,\"recv\":252588,\"send\":1825,\"source\":\"85.140.0.165\",\"timestamp\":1564741773.556435,\"transport\":\"tcp\"}]}";
+            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
+            string fileName = "json2.txt";
+
+            foreach (var a in dobj["result"])
+            {
+                Print(fileName, a["event_code"].ToString());
+                Print(fileName, a["event_origin"].ToString());
+                Print(fileName, a["event_text"].ToString());
+                Print(fileName, a["id"].ToString());
+                Print(fileName, a["ident"].ToString());
+                Print(fileName, a["source"].ToString());
+                Print(fileName, a["timestamp"].ToString());
+                Print(fileName, a["transport"].ToString()); 
+            }
+        }
         /**/
         static void test()
         {

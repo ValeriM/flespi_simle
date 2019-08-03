@@ -15,9 +15,12 @@ namespace flespi_simle
     class Program
     {
         static string token = "Authorization: FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";
+        //token = "Authorization: FlespiToken UIy8bexWRWLVX3H3yJFCkycRTNI3xRognMeoOBbvlKf8EK20kvrsRraz4GsqnGwB";
+        static string log = "flespi_simle.txt";
         static void Main(string[] args)
         {
-            //token = "Authorization: FlespiToken UIy8bexWRWLVX3H3yJFCkycRTNI3xRognMeoOBbvlKf8EK20kvrsRraz4GsqnGwB";
+            Print(log, "Start " + DateTime.Now.ToString());
+
             string[] menu =
             {
                 "Esc. Exit",
@@ -41,9 +44,12 @@ namespace flespi_simle
                 }
                 ch = Console.ReadKey();
                 Console.WriteLine();
+                int menuitem = Convert.ToInt32(ch.KeyChar);
+                if (menuitem != 27)
+                    Print(log, "Selected " + menu[(menuitem-48)]);
                 switch (ch.KeyChar)
                 {
-                    case '1': Client("https://flespi.io/gw/devices/361201"); break;
+                    case '1': Client("https://flespi.io/gw/devices/361201,361202"); break;
                     case '2': Client("https://flespi.io/gw/devices/361201/logs"); break;
                     case '3': Client("https://flespi.io/gw/devices/361201/messages"); break;
                     case '4': Client("https://flespi.io/gw/devices/all/settings/all"); break;
@@ -51,12 +57,32 @@ namespace flespi_simle
                     case '6': Client("https://flespi.io/gw/channels/all"); break;
                     case '7': ClientPost("https://flespi.io/gw/devices"); break;
                     case '8': Client("https://flespi.io/gw/devices/all/snapshots"); break;
-                    case '9': Client("https://flespi.io/gw/devices/361201/snapshots/1563817512"); break;
+                    case '9': Client("https://flespi.io/gw/devices/361201/snapshots/1563908110"); break;
                     default: Console.WriteLine("Что это было?"); break;
                 }
             } while (ch.Key != ConsoleKey.Escape);
-            //test();
+            test1();
         }
+        /**/
+        static void test1()
+        { 
+            string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
+            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
+
+            foreach(var a in dobj["result"])
+            {
+                Print("json.txt", a["cid"].ToString());
+                Print("json.txt", a["configuration"]["ident"]);
+                Print("json.txt", a["device_type_id"].ToString());
+                Print("json.txt", a["id"].ToString());
+                Print("json.txt", a["ident"].ToString());
+                Print("json.txt", a["messages_ttl"].ToString());
+                Print("json.txt", a["name"].ToString());
+                Print("json.txt", a["phone"].ToString());
+            }
+        }        
+        /**/
         static void test()
         {
             string json = @"{
@@ -89,7 +115,11 @@ namespace flespi_simle
                 Stream stream = webClient.OpenRead(URI);
                 StreamReader reader = new StreamReader(stream);
                 String request = reader.ReadToEnd();
-                Console.WriteLine(request);
+                Print(log, new string('-', 80));
+                Print(log, request);
+                /*StreamWriter streamWriter = new StreamWriter("snapshot.gz");
+                streamWriter.Write(request);
+                streamWriter.Close();*/
                 stream.Close();
                 reader.Close();
             }
@@ -101,12 +131,13 @@ namespace flespi_simle
                     {
                         case HttpStatusCode.NotFound:
                             //response = null;
-                            Console.WriteLine("Что-то пошло не так!");
+                            Print(log, "Что-то пошло не так!");
                             break;
 
                         default:
-                            Console.WriteLine("Что-то однозначно пошло не так!");
-                            throw ex;
+                            Print(log, "Что-то однозначно пошло не так! " + ex.Message);
+                            //throw ex;
+                            break;
                     }
                 }
             }
@@ -137,19 +168,30 @@ namespace flespi_simle
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    Console.WriteLine(streamReader.ReadToEnd());
+                    Print(log, streamReader.ReadToEnd());
                 }
             }
             catch(WebException ex)
             {
-                Console.WriteLine(ex.Message);
+                Print(log, ex.Message);
                 //Console.WriteLine(ex.Response.Headers.ToString());
                 using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
                 {
-                    Console.WriteLine(streamReader.ReadToEnd());
+                    Print(log, streamReader.ReadToEnd());
                 }
             }
         }
-
+        static void Print(string filename, string line, bool console = true)
+        {
+            if (console)
+                Console.WriteLine(line);
+            StreamWriter writer;
+            if (File.Exists(filename))
+                writer = new StreamWriter(filename, true);
+            else
+                writer = new StreamWriter(filename);
+            writer.WriteLine(line);
+            writer.Close();
+        }
     }
 }

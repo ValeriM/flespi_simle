@@ -105,6 +105,84 @@ namespace flespi_simle
             }
         }
         /**/
+        //"{"result":[{"absolute.acceleration":0,"ain.1":0,"ain.2":0,"alarm.event":false,"alarm.mode.status":false,"battery.voltage":4.096,"brake.acceleration":0,"bump.acceleration":0.35000000000000003,"channel.id":11489,"device.id":361201,"device.name":"УАЗ а025мо","device.temperature":42,"device.type.id":57,"engine.ignition.status":true,"external.powersource.voltage":12.275,"external.powersource.voltage.range.outside.status":false,"geofence.status":false,"gnss.antenna.status":true,"gnss.type":"glonass","gsm.signal.level":100,"gsm.sim.status":false,"ibutton.connected.status":false,"ident":"865905020671073","incline.event":false,"internal.battery.voltage.limit.lower.status":false,"internal.bus.supply.voltage.range.outside.status":false,"movement.status":true,"peer":"85.140.0.112:12032","position.altitude":27,"position.direction":300.2,"position.hdop":0.5,"position.latitude":51.44616,"position.longitude":46.107544,"position.satellites":15,"position.speed":0,"position.valid":true,"protocol.id":16,"record.seqnum":28932,"rs232.sensor.value.0":0,"rs485.fuel.sensor.level.0":0,"rs485.fuel.sensor.level.1":0,"rs485.fuel.sensor.level.2":0,"server.timestamp":1563781462.895147,"shock.event":false,"timestamp":1562511864,"turn.acceleration":0,"x.acceleration":-0.913978494623656,"y.acceleration":-0.1774193548387097,"z.acceleration":0.3279569892473118}]}";
+        static void test3()
+        {
+            string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
+            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
+            string fileName = "json3.txt";
+
+            string[] fields =
+            {
+                "absolute.acceleration",
+                "ain.1",
+                "ain.2",
+                "alarm.event",
+                "alarm.mode.status",
+                "battery.voltage",
+                "brake.acceleration",
+                "bump.acceleration",
+                "channel.id",
+                "device.id",
+                "device.name",
+                "device.temperature",
+                "device.type.id",
+                "engine.ignition.status",
+                "external.powersource.voltage",
+                "external.powersource.voltage.range.outside.status",
+                "geofence.status",
+                "gnss.antenna.status",
+                "gnss.type",
+                "gsm.signal.level",
+                "gsm.sim.status",
+                "ibutton.connected.status",
+                "ident",
+                "incline.event",
+                "internal.battery.voltage.limit.lower.status",
+                "internal.bus.supply.voltage.range.outside.status",
+                "movement.status",
+                "peer",
+                "position.altitude",
+                "position.direction",
+                "position.latitude",
+                "position.longitude",
+                "position.satellites",
+                "position.speed",
+                "position.valid",
+                "protocol.id",
+                "record.seqnum",
+                "rs232.sensor.value.0",
+                "rs485.fuel.sensor.level.0",
+                "rs485.fuel.sensor.level.1",
+                "rs485.fuel.sensor.level.2",
+                "server.timestamp",
+                "shock.event",
+                "timestamp",
+                "turn.acceleration",
+                "x.acceleration",
+                "y.acceleration",
+                "z.acceleration"
+            };
+
+            foreach (var a in dobj["result"])
+            {
+
+            }
+        }
+        static void test4()
+        {
+            string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
+            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
+            string fileName = "json3.txt";
+
+            foreach (var a in dobj["result"])
+            {
+
+            }
+        }
+        /**/
         static void test()
         {
             string json = @"{

@@ -9,13 +9,14 @@ using System.Web.Script.Serialization;
 using System.Net;
 using System.IO;
 //using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace flespi_simle
 {
     class Program
     {
-        static readonly string token = "Authorization: FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";
-        //token = "Authorization: FlespiToken UIy8bexWRWLVX3H3yJFCkycRTNI3xRognMeoOBbvlKf8EK20kvrsRraz4GsqnGwB";
+        static readonly string /*token = "Authorization: FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";*/
+        token = "Authorization: FlespiToken UIy8bexWRWLVX3H3yJFCkycRTNI3xRognMeoOBbvlKf8EK20kvrsRraz4GsqnGwB";
         static readonly string log = "flespi_simle.txt";
         static void Main(string[] args)
         {
@@ -32,7 +33,12 @@ namespace flespi_simle
                 "6. Get collection of channels matching filter parameters",
                 "7. Create new device",
                 "8. List device messages snapshots",
-                "9. Fetch device messages snapshot"
+                "9. Fetch device messages snapshot",
+                "a. Change existing devices properties",
+                "b. Calculate devices's intervals",
+                "c. Push new command to change setting value",
+                "d. Delete selected devices",
+                "e. Reset setting value"
             };
             ConsoleKeyInfo ch;
             do
@@ -44,9 +50,9 @@ namespace flespi_simle
                 }
                 ch = Console.ReadKey();
                 Console.WriteLine();
-                int menuitem = Convert.ToInt32(ch.KeyChar);
-                if (menuitem != 27)
-                    Print(log, "Selected " + menu[(menuitem-48)]);
+                //int menuitem = Convert.ToInt32(ch.KeyChar);
+                //if (menuitem != 27)
+                //    Print(log, "Selected " + menu[(menuitem-48)]);
                 switch (ch.KeyChar)
                 {
                     case '1': Client("https://flespi.io/gw/devices/361201,361202"); break;
@@ -58,6 +64,11 @@ namespace flespi_simle
                     case '7': ClientPost("https://flespi.io/gw/devices"); break;
                     case '8': Client("https://flespi.io/gw/devices/all/snapshots"); break;
                     case '9': Client("https://flespi.io/gw/devices/361201/snapshots/1563908110"); break;
+                    case 'a': ClientPut("https://flespi.io/gw/devices", "DoesNotExist"); break;
+                    case 'b': ClientPost("https://flespi.io/gw/devices/361201/calculate"); break;
+                    case 'c': ClientPut("https://flespi.io/gw/devices/361201/settings/DoesNotExist"); break;
+                    case 'd': ClientDelete("https://flespi.io/gw/devices", "DoesNotExist"); break;
+                    case 'e': ClientDelete("https://flespi.io/gw/devices/361201/settings", "DoesNotExist"); break;
                     default: Console.WriteLine("Что это было?"); break;
                 }
             } while (ch.Key != ConsoleKey.Escape);
@@ -65,13 +76,57 @@ namespace flespi_simle
             //test2();
             //test3();
             //Console.WriteLine(ReadFile("json3.txt"));
-            test5();
+            //test5();
+            //test4();
+            //test6();
+            //test8();
+
         }
         /**/
+        static void test6()
+        {
+            //string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
+            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            
+            string fileName = "json6.txt";
+            //{"result":[{"cid":166848,"commands_ttl":86400,"configuration":null,"enabled":true,"id":11844,"messages_ttl":86400,"name":"QS","protocol_id":1,"uri":"193.193.165.37:30242"}]} 
+            string json = ReadFile("json6i.txt");
+            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
+            foreach (var a in dobj["result"])
+            {
+                Print(fileName, a["cid"].ToString());
+                Print(fileName, a["commands_ttl"].ToString());
+                object o = a["configuration"];
+                Print(fileName, a["configuration"].ToString());
+                Print(fileName, a["enabled"].ToString());
+                Print(fileName, a["id"].ToString());
+                Print(fileName, a["messages_ttl"].ToString());
+                Print(fileName, a["name"].ToString());
+                Print(fileName, a["protocol_id"].ToString());
+                Print(fileName, a["uri"].ToString());
+            }
+        }
+        static void test8()
+        {
+            //string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
+            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+
+            string fileName = "json8.txt";
+            //{"result":[{"cid":166848,"commands_ttl":86400,"configuration":null,"enabled":true,"id":11844,"messages_ttl":86400,"name":"QS","protocol_id":1,"uri":"193.193.165.37:30242"}]} 
+            string json = ReadFile("json8i.txt"); dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
+            foreach (var a in dobj["result"])
+            {
+                Print(fileName, a["id"].ToString());
+                //object o = a["snapshots"];
+                foreach(var v in a["snapshots"])
+                Print(fileName, v.ToString());
+            }
+        }
         static void test1()
         { 
-            string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
+            //string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            string json = ReadFile("json1i.txt");
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             string fileName = "json1.txt";
 
@@ -90,8 +145,9 @@ namespace flespi_simle
         /**/
         static void test2()
         {
-            string json = "{\"result\":[{\"event_code\":300,\"event_origin\":\"gw\\/devices\\/361201\",\"event_text\":\"85.140.0.165\\/connected\",\"id\":361201,\"ident\":\"865905020671073\",\"source\":\"85.140.0.165\",\"timestamp\":1564730883.623162,\"transport\":\"tcp\"},{\"close_code\":3,\"duration\":10892,\"event_code\":301,\"event_origin\":\"gw\\/devices\\/361201\",\"event_text\":\"85.140.0.165\\/disconnected\",\"id\":361201,\"ident\":\"865905020671073\",\"msgs\":3022,\"recv\":252588,\"send\":1825,\"source\":\"85.140.0.165\",\"timestamp\":1564741773.556435,\"transport\":\"tcp\"}]}";
+            //string json = "{\"result\":[{\"event_code\":300,\"event_origin\":\"gw\\/devices\\/361201\",\"event_text\":\"85.140.0.165\\/connected\",\"id\":361201,\"ident\":\"865905020671073\",\"source\":\"85.140.0.165\",\"timestamp\":1564730883.623162,\"transport\":\"tcp\"},{\"close_code\":3,\"duration\":10892,\"event_code\":301,\"event_origin\":\"gw\\/devices\\/361201\",\"event_text\":\"85.140.0.165\\/disconnected\",\"id\":361201,\"ident\":\"865905020671073\",\"msgs\":3022,\"recv\":252588,\"send\":1825,\"source\":\"85.140.0.165\",\"timestamp\":1564741773.556435,\"transport\":\"tcp\"}]}";
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            string json = ReadFile("json2i.txt");
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             string fileName = "json2.txt";
 
@@ -111,18 +167,19 @@ namespace flespi_simle
         //
         static void test3()
         {
-            string json = "{\"result\":[{\"absolute.acceleration\":0,\"ain.1\":0,\"ain.2\":0,\"alarm.event\":false,"+
-            "\"alarm.mode.status\":false,\"battery.voltage\":4.096,\"brake.acceleration\":0,\"bump.acceleration\":0.35000000000000003,"+
-            "\"channel.id\":11489,\"device.id\":361201,\"device.name\":\"УАЗ а025мо\",\"device.temperature\":42,\"device.type.id\":57,"+
-            "\"engine.ignition.status\":true,\"external.powersource.voltage\":12.275,\"external.powersource.voltage.range.outside.status\":false,"+
-            "\"geofence.status\":false,\"gnss.antenna.status\":true,\"gnss.type\":\"glonass\",\"gsm.signal.level\":100,\"gsm.sim.status\":false,"+
-            "\"ibutton.connected.status\":false,\"ident\":\"865905020671073\",\"incline.event\":false,\"internal.battery.voltage.limit.lower.status\":false,"+
-            "\"internal.bus.supply.voltage.range.outside.status\":false,\"movement.status\":true,\"peer\":\"85.140.0.112:12032\",\"position.altitude\":27,"+
-            "\"position.direction\":300.2,\"position.hdop\":0.5,\"position.latitude\":51.44616,\"position.longitude\":46.107544,\"position.satellites\":15,"+
-            "\"position.speed\":0,\"position.valid\":true,\"protocol.id\":16,\"record.seqnum\":28932,\"rs232.sensor.value.0\":0,\"rs485.fuel.sensor.level.0\":0,"+
-            "\"rs485.fuel.sensor.level.1\":0,\"rs485.fuel.sensor.level.2\":0,\"server.timestamp\":1563781462.895147,\"shock.event\":false,\"timestamp\":1562511864,"+
-            "\"turn.acceleration\":0,\"x.acceleration\":-0.913978494623656,\"y.acceleration\":-0.1774193548387097,\"z.acceleration\":0.3279569892473118}]}";
+            //string json = "{\"result\":[{\"absolute.acceleration\":0,\"ain.1\":0,\"ain.2\":0,\"alarm.event\":false,"+
+            //"\"alarm.mode.status\":false,\"battery.voltage\":4.096,\"brake.acceleration\":0,\"bump.acceleration\":0.35000000000000003,"+
+            //"\"channel.id\":11489,\"device.id\":361201,\"device.name\":\"УАЗ а025мо\",\"device.temperature\":42,\"device.type.id\":57,"+
+            //"\"engine.ignition.status\":true,\"external.powersource.voltage\":12.275,\"external.powersource.voltage.range.outside.status\":false,"+
+            //"\"geofence.status\":false,\"gnss.antenna.status\":true,\"gnss.type\":\"glonass\",\"gsm.signal.level\":100,\"gsm.sim.status\":false,"+
+            //"\"ibutton.connected.status\":false,\"ident\":\"865905020671073\",\"incline.event\":false,\"internal.battery.voltage.limit.lower.status\":false,"+
+            //"\"internal.bus.supply.voltage.range.outside.status\":false,\"movement.status\":true,\"peer\":\"85.140.0.112:12032\",\"position.altitude\":27,"+
+            //"\"position.direction\":300.2,\"position.hdop\":0.5,\"position.latitude\":51.44616,\"position.longitude\":46.107544,\"position.satellites\":15,"+
+            //"\"position.speed\":0,\"position.valid\":true,\"protocol.id\":16,\"record.seqnum\":28932,\"rs232.sensor.value.0\":0,\"rs485.fuel.sensor.level.0\":0,"+
+            //"\"rs485.fuel.sensor.level.1\":0,\"rs485.fuel.sensor.level.2\":0,\"server.timestamp\":1563781462.895147,\"shock.event\":false,\"timestamp\":1562511864,"+
+            //"\"turn.acceleration\":0,\"x.acceleration\":-0.913978494623656,\"y.acceleration\":-0.1774193548387097,\"z.acceleration\":0.3279569892473118}]}";
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            string json = ReadFile("json3i.txt");
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             string fileName = "json3.txt";
 
@@ -186,20 +243,37 @@ namespace flespi_simle
         }
         static void test4()
         {
-            string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
+            string /*json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";*/
+
+            json = ReadFile("json4i.txt");
+
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             string fileName = "json4.txt";
 
             foreach (var a in dobj["result"])
             {
-
+                foreach(var v in a["address"])
+                {
+                    Print(fileName, v.ToString());
+                }
+                foreach(var v in a["current"])
+                {
+                    Print(fileName, v.ToString());
+                }
+                Print(fileName, a["device_id"].ToString());
+                Print(fileName, a["mode"].ToString());
+                Print(fileName, a["name"].ToString());
+                //Print(fileName, a["pending"].ToString());
+                Print(fileName, a["tab"].ToString());
+                Print(fileName, a["updated"].ToString());
             }
         }
         static void test5()
         {
-            string json = "{\"result\":[{\"id\":361201,\"telemetry\":{\"absolute.acceleration\":{\"ts\":1564740692,\"value\":0},\"ain.1\":{\"ts\":1564740692,\"value\":0},\"ain.2\":{\"ts\":1564740692,\"value\":0},\"alarm.event\":{\"ts\":1564740692,\"value\":false},\"alarm.mode.status\":{\"ts\":1564740692,\"value\":false},\"battery.voltage\":{\"ts\":1564740692,\"value\":3.512},\"brake.acceleration\":{\"ts\":1564740692,\"value\":0},\"bump.acceleration\":{\"ts\":1564740692,\"value\":0.22},\"device.temperature\":{\"ts\":1564740692,\"value\":38},\"engine.ignition.status\":{\"ts\":1564740692,\"value\":true},\"external.powersource.voltage\":{\"ts\":1564740692,\"value\":0},\"external.powersource.voltage.range.outside.status\":{\"ts\":1564740692,\"value\":true},\"geofence.status\":{\"ts\":1564740692,\"value\":false},\"gnss.antenna.status\":{\"ts\":1564740692,\"value\":true},\"gnss.type\":{\"ts\":1564740692,\"value\":\"glonass\"},\"gsm.signal.level\":{\"ts\":1564740692,\"value\":33},\"gsm.sim.status\":{\"ts\":1564740692,\"value\":false},\"hardware.version.enum\":{\"ts\":1564730883.623066,\"value\":17},\"ibutton.connected.status\":{\"ts\":1564740692,\"value\":false},\"ident\":{\"ts\":1564740692,\"value\":\"865905020671073\"},\"incline.event\":{\"ts\":1564740692,\"value\":false},\"internal.battery.voltage.limit.lower.status\":{\"ts\":1564740692,\"value\":true},\"internal.bus.supply.voltage.range.outside.status\":{\"ts\":1564740692,\"value\":true},\"movement.status\":{\"ts\":1564740692,\"value\":true},\"peer\":{\"ts\":1564740692,\"value\":\"85.140.0.165:43418\"},\"position\":{\"ts\":1564740692,\"value\":{\"altitude\":32,\"direction\":296.6,\"hdop\":0.6000000000000001,\"latitude\":51.446176,\"longitude\":46.107536,\"satellites\":15,\"speed\":0,\"valid\":true}},\"position.altitude\":{\"ts\":1564740692,\"value\":32},\"position.direction\":{\"ts\":1564740692,\"value\":296.6},\"position.hdop\":{\"ts\":1564740692,\"value\":0.6000000000000001},\"position.latitude\":{\"ts\":1564740692,\"value\":51.446176},\"position.longitude\":{\"ts\":1564740692,\"value\":46.107536},\"position.satellites\":{\"ts\":1564740692,\"value\":15},\"position.speed\":{\"ts\":1564740692,\"value\":0},\"position.valid\":{\"ts\":1564740692,\"value\":true},\"record.seqnum\":{\"ts\":1564740692,\"value\":3754},\"rs232.sensor.value.0\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.0\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.1\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.2\":{\"ts\":1564740692,\"value\":0},\"server.timestamp\":{\"ts\":1564740692,\"value\":1564740694.42362},\"shock.event\":{\"ts\":1564740692,\"value\":false},\"software.version.enum\":{\"ts\":1564730883.623066,\"value\":231},\"timestamp\":{\"ts\":1564740692,\"value\":1564740692},\"turn.acceleration\":{\"ts\":1564740692,\"value\":0},\"x.acceleration\":{\"ts\":1564740692,\"value\":-0.9301075268817204},\"y.acceleration\":{\"ts\":1564740692,\"value\":-0.1989247311827957},\"z.acceleration\":{\"ts\":1564740692,\"value\":0.3763440860215054}}}]}";
+            //string json = "{\"result\":[{\"id\":361201,\"telemetry\":{\"absolute.acceleration\":{\"ts\":1564740692,\"value\":0},\"ain.1\":{\"ts\":1564740692,\"value\":0},\"ain.2\":{\"ts\":1564740692,\"value\":0},\"alarm.event\":{\"ts\":1564740692,\"value\":false},\"alarm.mode.status\":{\"ts\":1564740692,\"value\":false},\"battery.voltage\":{\"ts\":1564740692,\"value\":3.512},\"brake.acceleration\":{\"ts\":1564740692,\"value\":0},\"bump.acceleration\":{\"ts\":1564740692,\"value\":0.22},\"device.temperature\":{\"ts\":1564740692,\"value\":38},\"engine.ignition.status\":{\"ts\":1564740692,\"value\":true},\"external.powersource.voltage\":{\"ts\":1564740692,\"value\":0},\"external.powersource.voltage.range.outside.status\":{\"ts\":1564740692,\"value\":true},\"geofence.status\":{\"ts\":1564740692,\"value\":false},\"gnss.antenna.status\":{\"ts\":1564740692,\"value\":true},\"gnss.type\":{\"ts\":1564740692,\"value\":\"glonass\"},\"gsm.signal.level\":{\"ts\":1564740692,\"value\":33},\"gsm.sim.status\":{\"ts\":1564740692,\"value\":false},\"hardware.version.enum\":{\"ts\":1564730883.623066,\"value\":17},\"ibutton.connected.status\":{\"ts\":1564740692,\"value\":false},\"ident\":{\"ts\":1564740692,\"value\":\"865905020671073\"},\"incline.event\":{\"ts\":1564740692,\"value\":false},\"internal.battery.voltage.limit.lower.status\":{\"ts\":1564740692,\"value\":true},\"internal.bus.supply.voltage.range.outside.status\":{\"ts\":1564740692,\"value\":true},\"movement.status\":{\"ts\":1564740692,\"value\":true},\"peer\":{\"ts\":1564740692,\"value\":\"85.140.0.165:43418\"},\"position\":{\"ts\":1564740692,\"value\":{\"altitude\":32,\"direction\":296.6,\"hdop\":0.6000000000000001,\"latitude\":51.446176,\"longitude\":46.107536,\"satellites\":15,\"speed\":0,\"valid\":true}},\"position.altitude\":{\"ts\":1564740692,\"value\":32},\"position.direction\":{\"ts\":1564740692,\"value\":296.6},\"position.hdop\":{\"ts\":1564740692,\"value\":0.6000000000000001},\"position.latitude\":{\"ts\":1564740692,\"value\":51.446176},\"position.longitude\":{\"ts\":1564740692,\"value\":46.107536},\"position.satellites\":{\"ts\":1564740692,\"value\":15},\"position.speed\":{\"ts\":1564740692,\"value\":0},\"position.valid\":{\"ts\":1564740692,\"value\":true},\"record.seqnum\":{\"ts\":1564740692,\"value\":3754},\"rs232.sensor.value.0\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.0\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.1\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.2\":{\"ts\":1564740692,\"value\":0},\"server.timestamp\":{\"ts\":1564740692,\"value\":1564740694.42362},\"shock.event\":{\"ts\":1564740692,\"value\":false},\"software.version.enum\":{\"ts\":1564730883.623066,\"value\":231},\"timestamp\":{\"ts\":1564740692,\"value\":1564740692},\"turn.acceleration\":{\"ts\":1564740692,\"value\":0},\"x.acceleration\":{\"ts\":1564740692,\"value\":-0.9301075268817204},\"y.acceleration\":{\"ts\":1564740692,\"value\":-0.1989247311827957},\"z.acceleration\":{\"ts\":1564740692,\"value\":0.3763440860215054}}}]}";
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            string json = ReadFile("json5i.txt");
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             string fileName = "json5.txt";
 
@@ -411,6 +485,75 @@ namespace flespi_simle
                 }
             }
             catch(WebException ex)
+            {
+                Print(log, ex.Message);
+                //Console.WriteLine(ex.Response.Headers.ToString());
+                using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    Print(log, streamReader.ReadToEnd());
+                }
+            }
+        }
+        /*
+         string headername = "TokenName";
+string headervalue = "0000000000";
+var request = (HttpWebRequest)WebRequest.Create("https://URL");
+request.Method = "DELETE";
+request.Headers.Add(headername, headervalue);
+try
+{ var response = (HttpWebResponse)request.GetResponse(); var responseString = new StreamReader(response.GetResponseStream()).*********();
+var jss = new JavaScriptSerializer(); var dict = jss.Deserialize<dynamic>(responseString); string message += "deleted Item with id" + dict["id"];
+}
+catch
+{ string message += "Didn't delete Item";
+} */
+        static void ClientDelete(string url, string mask = "all")
+        {
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpWebRequest.Headers.Add(token);
+            httpWebRequest.Headers.Add(mask);
+            httpWebRequest.Accept = "application/json";
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.KeepAlive = true;
+            httpWebRequest.Method = "DELETE";
+            httpWebRequest.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)";
+            try
+            {
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    Print(log, streamReader.ReadToEnd());
+                }
+            }
+            catch (WebException ex)
+            {
+                Print(log, ex.Message);
+                //Console.WriteLine(ex.Response.Headers.ToString());
+                using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    Print(log, streamReader.ReadToEnd());
+                }
+            }
+        }
+        static void ClientPut(string url, string mask = "all")
+        {
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpWebRequest.Headers.Add(token);
+            httpWebRequest.Headers.Add(mask);
+            httpWebRequest.Accept = "application/json";
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.KeepAlive = true;
+            httpWebRequest.Method = "PUT";
+            httpWebRequest.UserAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)";
+            try
+            {
+                var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    Print(log, streamReader.ReadToEnd());
+                }
+            }
+            catch (WebException ex)
             {
                 Print(log, ex.Message);
                 //Console.WriteLine(ex.Response.Headers.ToString());

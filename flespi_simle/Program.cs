@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
-using System.Web.Script;
 using System.Web.Script.Serialization;
 using System.Net;
 using System.IO;
-//using Newtonsoft.Json;
-using System.Net.Http;
 
 namespace flespi_simle
 {

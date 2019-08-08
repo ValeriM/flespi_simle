@@ -3,13 +3,26 @@ using System.Web.Script.Serialization;
 using System.Net;
 using System.IO;
 
+//using System.Threading;
+//using System.Diagnostics;
+//using OpenNETCF.MQTT;
+//using System.Net.WebSockets;
+//using System.Threading.Tasks;
+using System.Text;
+
+using uPLibrary.Networking.M2Mqtt;
+using uPLibrary.Networking.M2Mqtt.Messages;
+
 namespace flespi_simle
 {
     class Program
     {
-        static readonly string /*token = "Authorization: FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";*/
-        token = "Authorization: FlespiToken UIy8bexWRWLVX3H3yJFCkycRTNI3xRognMeoOBbvlKf8EK20kvrsRraz4GsqnGwB";
+        static readonly string token = "Authorization: FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";
+        //token = "Authorization: FlespiToken UIy8bexWRWLVX3H3yJFCkycRTNI3xRognMeoOBbvlKf8EK20kvrsRraz4GsqnGwB";
         static readonly string log = "flespi_simle.txt";
+        static MqttClient client;
+        static string clientId;
+
         static void Main(string[] args)
         {
             Print(log, "Start " + DateTime.Now.ToString());
@@ -72,7 +85,8 @@ namespace flespi_simle
             //test4();
             //test6();
             //test8();
-
+            ClientReceiveTest1();
+            //SendTicksRequest();
         }
         /**/
         static void test6()
@@ -574,6 +588,64 @@ catch
             ret = reader.ReadToEnd();
             reader.Close();
             return ret;
+        }
+        static void ClientReceiveTest11()
+        {
+            MqttClient client = new MqttClient("test.mosquitto.org");
+            byte code = client.Connect(Guid.NewGuid().ToString()/*, token, ""*/);
+
+            Console.WriteLine("Protocol " + client.ProtocolVersion);
+
+            Console.WriteLine("Connected " + client.IsConnected);
+            Console.WriteLine(client.Settings.Port + " " + client.Settings.SslPort);
+
+            client.MqttMsgPublished += client_MqttMsgPublished;
+            client.MqttMsgSubscribed += client_MqttMsgSubscribed;
+            client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+            client.MqttMsgUnsubscribed += client_MqttMsgUnsubscribed;
+
+            ushort msgId = client.Publish("/my_topic", // topic
+                           Encoding.UTF8.GetBytes("MyMessageBody"), // message body
+                           MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, // QoS level
+                           false); // retained
+            ushort msgId2 = client.Subscribe(new string[] { "/topic_1", "/topic_2" },
+                            new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE,
+                            MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
+            //client.Disconnect();
+        }
+
+        static void client_MqttMsgPublished(object sender, MqttMsgPublishedEventArgs e)
+        {
+            Console.WriteLine("MessageId = " + e.MessageId + " Published = " + e.IsPublished);
+        }
+        static void client_MqttMsgSubscribed(object sender, MqttMsgSubscribedEventArgs e)
+        {
+            Console.WriteLine("Subscribed for id = " + e.MessageId);
+        }
+        static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+        {
+            Console.WriteLine("Received = " + Encoding.UTF8.GetString(e.Message) + " on topic " + e.Topic);
+        }
+        static void client_MqttMsgUnsubscribed(object sender, MqttMsgUnsubscribedEventArgs e)
+        {
+            Console.WriteLine("Unsubscribed for id = " + e.MessageId);
+        }
+        static void ClientReceiveTest1()
+        {
+            string BrokerAddress = "mqtt.flespi.io";
+            client = new MqttClient(BrokerAddress);
+
+            // register a callback-function (we have to implement, see below) which is called by the library when a message was received
+            client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+
+            // use a unique id as client id, each time we start the application
+            clientId = Guid.NewGuid().ToString();
+
+            client.Connect(clientId, "FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17", "");
+
+            Console.WriteLine(client.IsConnected ? "Connected" : "Хуй там");
+
+            ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/370835" }, new byte[] { 2 });
         }
     }
 }

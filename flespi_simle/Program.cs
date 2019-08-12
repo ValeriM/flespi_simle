@@ -10,6 +10,9 @@ using System.IO;
 //using System.Threading.Tasks;
 using System.Text;
 
+using System.Data;
+using System.Data.SqlClient;
+
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 
@@ -19,12 +22,18 @@ namespace flespi_simle
     {
         static readonly string token = "Authorization: FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";
         //token = "Authorization: FlespiToken UIy8bexWRWLVX3H3yJFCkycRTNI3xRognMeoOBbvlKf8EK20kvrsRraz4GsqnGwB";
+        //token = "Authorization: FlespiToken lCG8yJPUWRc9awe3M2AaTuKcqd5N4Nvgd1cByPklwkiuGmogcOgW6QWmURXOujSx";
         static readonly string log = "flespi_simle.txt";
         static MqttClient client;
         static string clientId;
+        static string conStr = Properties.Settings.Default.Connection;
 
         static void Main(string[] args)
         {
+            //string conStr = Properties.Settings.Default.Connection;
+
+            Print(log, conStr);
+
             Print(log, "Start " + DateTime.Now.ToString());
 
             string[] menu =
@@ -43,7 +52,8 @@ namespace flespi_simle
                 "b. Calculate devices's intervals",
                 "c. Push new command to change setting value",
                 "d. Delete selected devices",
-                "e. Reset setting value"
+                "e. Reset setting value",
+                "f. Get specified modems info."
             };
             ConsoleKeyInfo ch;
             do
@@ -60,9 +70,9 @@ namespace flespi_simle
                 //    Print(log, "Selected " + menu[(menuitem-48)]);
                 switch (ch.KeyChar)
                 {
-                    case '1': Client("https://flespi.io/gw/devices/361201,361202"); break;
+                    case '1': Client("https://flespi.io/gw/devices/all"); break;
                     case '2': Client("https://flespi.io/gw/devices/361201/logs"); break;
-                    case '3': Client("https://flespi.io/gw/devices/361201/messages"); break;
+                    case '3': Client("https://flespi.io/gw/devices/361202/messages"); break;
                     case '4': Client("https://flespi.io/gw/devices/all/settings/all"); break;
                     case '5': Client("https://flespi.io/gw/devices/361201/telemetry"); break;
                     case '6': Client("https://flespi.io/gw/channels/all"); break;
@@ -74,6 +84,7 @@ namespace flespi_simle
                     case 'c': ClientPut("https://flespi.io/gw/devices/361201/settings/DoesNotExist"); break;
                     case 'd': ClientDelete("https://flespi.io/gw/devices", "DoesNotExist"); break;
                     case 'e': ClientDelete("https://flespi.io/gw/devices/361201/settings", "DoesNotExist"); break;
+                    case 'f': Client("https://flespi.io/gw/modems/6624"); break;
                     default: Console.WriteLine("Что это было?"); break;
                 }
             } while (ch.Key != ConsoleKey.Escape);
@@ -89,6 +100,10 @@ namespace flespi_simle
             //SendTicksRequest();
         }
         /**/
+        class Test6
+        {
+
+        };
         static void test6()
         {
             //string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
@@ -129,12 +144,20 @@ namespace flespi_simle
             }
         }
         static void test1()
-        { 
-            //string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
+        {
+            string json = Client("https://flespi.io/gw/devices/all"); //"{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
+
+            SqlConnection sqlConnection = new SqlConnection(conStr);
+            sqlConnection.Open();
+            SqlCommand sqlCommand = new SqlCommand("", sqlConnection);
+            //sqlCommand.CommandText = "Insert Into Devices (cid, configuration_ident, device_type_id, id, ident, messages_ttl, name, phone) Values (@cid, @configuration_ident, @device_type_id, @id, @ident, @messages_ttl, @name, @phone)";
+            sqlCommand.CommandText = "Insert Into Devices (cid, configuration_ident, device_type_id, id, messages_ttl, name) Values (@cid, @configuration_ident, @device_type_id, @id, @messages_ttl, @name)";
+
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            string json = ReadFile("json1i.txt");
+            //string json = ReadFile("json1i.txt");
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             string fileName = "json1.txt";
+            int rows = 0;
 
             foreach(var a in dobj["result"])
             {
@@ -142,11 +165,42 @@ namespace flespi_simle
                 Print(fileName, a["configuration"]["ident"]);
                 Print(fileName, a["device_type_id"].ToString());
                 Print(fileName, a["id"].ToString());
-                Print(fileName, a["ident"].ToString());
+                //Print(fileName, a["ident"].ToString());
                 Print(fileName, a["messages_ttl"].ToString());
                 Print(fileName, a["name"].ToString());
-                Print(fileName, a["phone"].ToString());
+                //Print(fileName, a["phone"].ToString());
+
+                sqlCommand.Parameters.Add("@cid", SqlDbType.Int);
+                sqlCommand.Parameters["@cid"].Value = a["cid"].ToString();
+
+                sqlCommand.Parameters.Add("@configuration_ident", SqlDbType.VarChar);
+                sqlCommand.Parameters["@configuration_ident"].Value = a["configuration"]["ident"].ToString();
+
+
+                sqlCommand.Parameters.Add("@device_type_id", SqlDbType.Int);
+                sqlCommand.Parameters["@device_type_id"].Value = a["device_type_id"].ToString();
+
+                sqlCommand.Parameters.Add("@id", SqlDbType.Int);
+                sqlCommand.Parameters["@id"].Value = a["id"].ToString();
+
+                //sqlCommand.Parameters.Add("@ident", SqlDbType.VarChar);
+                //sqlCommand.Parameters["@ident"].Value = a["ident"].ToString();
+
+                sqlCommand.Parameters.Add("@messages_ttl", SqlDbType.Int);
+                sqlCommand.Parameters["@messages_ttl"].Value = a["messages_ttl"].ToString();
+
+                sqlCommand.Parameters.Add("@name", SqlDbType.VarChar);
+                sqlCommand.Parameters["@name"].Value = a["name"].ToString();
+
+                //sqlCommand.Parameters.Add("@phone", SqlDbType.VarChar);
+                //sqlCommand.Parameters["@phone"].Value = a["phone"].ToString();
+
+                rows += sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Parameters.Clear();
             }
+            sqlConnection.Close();
+            Print(fileName, "Row(s) affected " + rows.ToString());
         }
         /**/
         static void test2()
@@ -171,80 +225,127 @@ namespace flespi_simle
         }
         /**/
         //
-        static void test3()
+        class Test3
         {
-            //string json = "{\"result\":[{\"absolute.acceleration\":0,\"ain.1\":0,\"ain.2\":0,\"alarm.event\":false,"+
-            //"\"alarm.mode.status\":false,\"battery.voltage\":4.096,\"brake.acceleration\":0,\"bump.acceleration\":0.35000000000000003,"+
-            //"\"channel.id\":11489,\"device.id\":361201,\"device.name\":\"УАЗ а025мо\",\"device.temperature\":42,\"device.type.id\":57,"+
-            //"\"engine.ignition.status\":true,\"external.powersource.voltage\":12.275,\"external.powersource.voltage.range.outside.status\":false,"+
-            //"\"geofence.status\":false,\"gnss.antenna.status\":true,\"gnss.type\":\"glonass\",\"gsm.signal.level\":100,\"gsm.sim.status\":false,"+
-            //"\"ibutton.connected.status\":false,\"ident\":\"865905020671073\",\"incline.event\":false,\"internal.battery.voltage.limit.lower.status\":false,"+
-            //"\"internal.bus.supply.voltage.range.outside.status\":false,\"movement.status\":true,\"peer\":\"85.140.0.112:12032\",\"position.altitude\":27,"+
-            //"\"position.direction\":300.2,\"position.hdop\":0.5,\"position.latitude\":51.44616,\"position.longitude\":46.107544,\"position.satellites\":15,"+
-            //"\"position.speed\":0,\"position.valid\":true,\"protocol.id\":16,\"record.seqnum\":28932,\"rs232.sensor.value.0\":0,\"rs485.fuel.sensor.level.0\":0,"+
-            //"\"rs485.fuel.sensor.level.1\":0,\"rs485.fuel.sensor.level.2\":0,\"server.timestamp\":1563781462.895147,\"shock.event\":false,\"timestamp\":1562511864,"+
-            //"\"turn.acceleration\":0,\"x.acceleration\":-0.913978494623656,\"y.acceleration\":-0.1774193548387097,\"z.acceleration\":0.3279569892473118}]}";
+            int id;
+            int absolute_acceleration;
+            int ain_1;
+            int ain_2;
+            bool alarm_event;
+            bool alarm_mode_status;
+            decimal battery_voltage;
+            decimal brake_acceleration;
+            decimal bump_acceleration;
+            int channel_id;
+            int device_id;
+            string device_name;
+            int device_temperature;
+            int device_type_id;
+            bool engine_ignition_status;
+            decimal external_powersource_voltage;
+            bool external_powersource_voltage_range_outside_status;
+            bool geofence_status;
+            bool gnss_antenna_status;
+            string gnss_type;
+            int gsm_signal_level;
+            bool gsm_sim_status;
+            bool ibutton_connected_status;
+            long ident;
+            bool incline_event;
+            bool internal_battery_voltage_limit_lower_status;
+            bool internal_bus_supply_voltage_range_outside_status;
+            bool movement_status;
+            string peer;
+            decimal position_altitude;
+            decimal position_direction;
+            decimal position_hdop;
+            decimal position_latitude;
+            decimal position_longitude;
+            int position_satellites;
+            int position_speed;
+            bool position_valid;
+            int protocol_id;
+            int record_seqnum;
+            int rs232_sensor_value_0;
+            int rs485_fuel_sensor_level_0;
+            int rs485_fuel_sensor_level_1;
+            int rs485_fuel_sensor_level_2;
+            decimal server_timestamp;
+            bool shock_event;
+            decimal timestamp;
+            int turn_acceleration;
+            double x_acceleration;
+            double y_acceleration;
+            double z_acceleration;
+        };
+        static void test3(string json = "")
+        {
+            
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            string json = ReadFile("json3i.txt");
+            //string json = ReadFile("json3i.txt");
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             string fileName = "json3.txt";
 
             string[] fields =
             {
-                "absolute.acceleration",
-                "ain.1",
-                "ain.2",
-                "alarm.event",
-                "alarm.mode.status",
-                "battery.voltage",
-                "brake.acceleration",
-                "bump.acceleration",
-                "channel.id",
-                "device.id",
-                "device.name",
-                "device.temperature",
-                "device.type.id",
-                "engine.ignition.status",
-                "external.powersource.voltage",
-                "external.powersource.voltage.range.outside.status",
-                "geofence.status",
-                "gnss.antenna.status",
-                "gnss.type",
-                "gsm.signal.level",
-                "gsm.sim.status",
-                "ibutton.connected.status",
-                "ident",
-                "incline.event",
-                "internal.battery.voltage.limit.lower.status",
-                "internal.bus.supply.voltage.range.outside.status",
-                "movement.status",
-                "peer",
-                "position.altitude",
-                "position.direction",
-                "position.latitude",
-                "position.longitude",
-                "position.satellites",
-                "position.speed",
-                "position.valid",
-                "protocol.id",
-                "record.seqnum",
-                "rs232.sensor.value.0",
-                "rs485.fuel.sensor.level.0",
-                "rs485.fuel.sensor.level.1",
-                "rs485.fuel.sensor.level.2",
-                "server.timestamp",
-                "shock.event",
-                "timestamp",
-                "turn.acceleration",
-                "x.acceleration",
-                "y.acceleration",
-                "z.acceleration"
+                "absolute.acceleration",//0
+                //"ain.1",
+                //"ain.2",
+                "alarm.event",//1
+                "alarm.mode.status",//2
+                //"battery.voltage",
+                "brake.acceleration",//3
+                "bump.acceleration",//4
+                "channel.id",//5
+                "device.id",//6
+                "device.name",//7
+                //"device.temperature",
+                "device.type.id",//
+                "engine.ignition.status",//
+                "external.powersource.voltage",//
+                "external.powersource.voltage.range.outside.status",//
+                "geofence.status",//
+                "gnss.antenna.status",//
+                "gnss.type",//
+                "gsm.signal.level",//
+                "gsm.sim.status",//
+                "ibutton.connected.status",//
+                "ident",//
+                "incline.event",//
+                "internal.battery.voltage.limit.lower.status",//
+                "internal.bus.supply.voltage.range.outside.status",//
+                "movement.status",//
+                "peer",//
+                "position.altitude",//
+                "position.direction",//
+                "position.hdop",//
+                "position.latitude",//
+                "position.longitude",//
+                "position.satellites",//
+                "position.speed",//
+                "position.valid",//
+                "protocol.id",//
+                "record.seqnum",//
+                //"rs232.sensor.value.0",
+                //"rs485.fuel.sensor.level.0",
+                //"rs485.fuel.sensor.level.1",
+                //"rs485.fuel.sensor.level.2",
+                "server.timestamp",//
+                "shock.event",//
+                "timestamp",//
+                "turn.acceleration",//
+                "x.acceleration",//
+                "y.acceleration",//
+                "z.acceleration"//
             };
 
             foreach (var a in dobj["result"])
             {
-                foreach(var field in fields)
+                foreach (var field in fields)
+                {
+                    //Print(fileName, "-------------- " + field + " ---------------");
                     Print(fileName, a[field].ToString());
+                }
             }
         }
         static void test4()
@@ -423,8 +524,9 @@ namespace flespi_simle
             webClient.Credentials = new NetworkCredential(username, password);
             Stream stream = webClient.OpenRead(URI);
         */
-        static void Client(string URI)
+        static string Client(string URI)
         {
+            string request = string.Empty;
             try
             {
                 WebClient webClient = new WebClient();
@@ -433,7 +535,7 @@ namespace flespi_simle
                 webClient.Headers.Add(token);
                 Stream stream = webClient.OpenRead(URI);
                 StreamReader reader = new StreamReader(stream);
-                String request = reader.ReadToEnd();
+                request = reader.ReadToEnd();
                 Print(log, new string('-', 80));
                 Print(log, request);
                 /*StreamWriter streamWriter = new StreamWriter("snapshot.gz");
@@ -460,6 +562,7 @@ namespace flespi_simle
                     }
                 }
             }
+            return request;
         }
         static void ClientPost(string url)
         {
@@ -625,10 +728,23 @@ catch
         static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             Console.WriteLine("Received = " + Encoding.UTF8.GetString(e.Message) + " on topic " + e.Topic);
+            //Print("Received.txt", Encoding.UTF8.GetString(e.Message) + " " + e.Topic);
+            test3("{\"result\":["+Encoding.UTF8.GetString(e.Message)+"]}");
         }
         static void client_MqttMsgUnsubscribed(object sender, MqttMsgUnsubscribedEventArgs e)
         {
             Console.WriteLine("Unsubscribed for id = " + e.MessageId);
+        }
+        static void Parse(string topic, string message)
+        {
+            string [] headers = topic.Split('/');
+            string setting = headers[6];
+            string device = headers[4];
+            switch(setting)
+            {
+                case "sin4": break;
+                default: break;
+            }
         }
         static void ClientReceiveTest1()
         {
@@ -645,7 +761,9 @@ catch
 
             Console.WriteLine(client.IsConnected ? "Connected" : "Хуй там");
 
-            ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/370835" }, new byte[] { 2 });
+            ushort code = client.Subscribe(new string[] { "flespi/message/gw/devices/361202" }, new byte[] { 2 });
+            //ushort code2 = client.Subscribe(new string[] { "flespi/state/gw/devices/361201" }, new byte[] { 2 });
+            //ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/+/settings/+" }, new byte[] { 2 });
         }
     }
 }

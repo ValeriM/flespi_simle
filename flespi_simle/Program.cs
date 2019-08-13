@@ -13,6 +13,8 @@ using System.Text;
 using System.Data;
 using System.Data.SqlClient;
 
+using System.Collections.Generic;
+
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 
@@ -98,6 +100,8 @@ namespace flespi_simle
             //test8();
             ClientReceiveTest1();
             //SendTicksRequest();
+            //test_zero();
+            //Parse("flespi/state/gw/devices/361202/telemetry/z.acceleration", "-0.10101010101");
         }
         /**/
         class Test6
@@ -278,6 +282,102 @@ namespace flespi_simle
             double y_acceleration;
             double z_acceleration;
         };
+        static void test_zero()
+        {
+            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            string json = ReadFile("json3i.txt");
+            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
+            Dictionary<string, SqlDbType> fields = new Dictionary<string, SqlDbType>
+            {
+               {"absolute.acceleration", SqlDbType.Int},//0
+               {"alarm.event", SqlDbType.Bit },//1
+               {"alarm.mode.status", SqlDbType.Bit},//2
+               {"brake.acceleration", SqlDbType.Int},//3
+               { "bump.acceleration",SqlDbType.Real },//4
+               { "channel.id", SqlDbType.Int},//5
+               { "device.id", SqlDbType.Int},//6
+               { "device.name",SqlDbType.VarChar },//7
+               { "device.type.id",SqlDbType.Int },//8
+               { "engine.ignition.status",SqlDbType.Bit },//9
+                { "external.powersource.voltage",SqlDbType.Real },//10
+                { "external.powersource.voltage.range.outside.status",SqlDbType.Bit },//11
+                { "geofence.status",SqlDbType.Bit },//12
+                { "gnss.antenna.status",SqlDbType.Bit },//13
+                { "gnss.type",SqlDbType.VarChar },//14
+                { "gsm.signal.level",SqlDbType.Int },//15
+                { "gsm.sim.status",SqlDbType.Bit },//16
+                { "ibutton.connected.status",SqlDbType.Bit },//17
+                { "ident",SqlDbType.VarChar },//18
+                { "incline.event",SqlDbType.Bit },//19
+                { "internal.battery.voltage.limit.lower.status",SqlDbType.Bit },//20
+                { "internal.bus.supply.voltage.range.outside.status",SqlDbType.Bit },//21
+                { "movement.status",SqlDbType.Bit },//22
+                { "peer",SqlDbType.VarChar },//23
+                { "position.altitude",SqlDbType.Real },//24
+                { "position.direction",SqlDbType.Real },//25
+                { "position.hdop",SqlDbType.Real },//26
+                { "position.latitude",SqlDbType.Real },//27
+                { "position.longitude",SqlDbType.Real },//28
+                { "position.satellites",SqlDbType.Real },//29
+                { "position.speed",SqlDbType.Real },//30
+                { "position.valid",SqlDbType.Bit },//31
+                { "protocol.id",SqlDbType.Int },//32
+                { "record.seqnum",SqlDbType.Int },//33
+                { "server.timestamp",SqlDbType.Real },//34
+                { "shock.event",SqlDbType.Bit },//35
+                { "timestamp",SqlDbType.BigInt },//36
+                { "turn.acceleration",SqlDbType.Int },//37
+                { "x.acceleration",SqlDbType.Real },//38
+                { "y.acceleration",SqlDbType.Real },//39
+                { "z.acceleration",SqlDbType.Real }//40
+            };
+
+            SqlConnection sqlConnection = new SqlConnection(conStr);
+            sqlConnection.Open();
+            SqlCommand sqlCommand = new SqlCommand("", sqlConnection);
+            //sqlCommand.CommandText = "Insert Into Messages ([absolute.acceleration]) Values (@p0)";
+            int rows = 0;
+            string sql = "Insert Into Messages (";
+            string sql2 = "(";
+
+            int rmax = 41;
+
+            foreach(var field in fields)
+            {
+                sql += "[" + field.Key + "],";
+                sql2 += "@p" + rows.ToString() + ",";
+                rows++;
+                if (rows == rmax) break;
+            }
+            sql = sql.Remove(sql.Length-1);
+            sql2 = sql2.Remove(sql2.Length - 1);
+            sql += ") Values " + sql2 + ")";
+
+            sqlCommand.CommandText = sql;
+
+            rows = 0;
+
+            foreach (var a in dobj["result"])
+            {
+                foreach (var field in fields)
+                {
+                    //sqlCommand.Parameters.Add("@[" + field.Key + "]", field.Value);
+                    //sqlCommand.Parameters["@[" + field.Key + "]"].Value = a[field.Key].ToString();
+                    sqlCommand.Parameters.Add("@p"+rows.ToString(), field.Value);
+                    sqlCommand.Parameters["@p"+rows.ToString()].Value = a[field.Key].ToString();
+                    Print("log.txt", field.Key + " = " +a[field.Key].ToString());
+                    rows++;
+                    if (rows == rmax) break;
+                }
+                //rows += sqlCommand.ExecuteNonQuery();
+                //sqlCommand.Parameters.Clear();
+            }
+
+
+
+            rows += sqlCommand.ExecuteNonQuery();
+            sqlConnection.Close();
+        }
         static void test3(string json = "")
         {
             
@@ -338,6 +438,95 @@ namespace flespi_simle
                 "y.acceleration",//
                 "z.acceleration"//
             };
+            SqlConnection sqlConnection = new SqlConnection(conStr);
+            sqlConnection.Open();
+            SqlCommand sqlCommand = new SqlCommand("", sqlConnection);
+            sqlCommand.CommandText = @"INSERT INTO [dbo].[Messages]
+           ([absolute.acceleration]
+           ,[alarm.event]
+           ,[alarm.mode.status]
+           ,[brake.acceleration]
+           ,[bump.acceleration]
+           ,[channel.id]
+           ,[device.id]
+           ,[device.name]
+           ,[device.type.id]
+           ,[engine.ignition.status]
+           ,[external.powersource.voltage]
+           ,[external.powersource.voltage.range.outside.status]
+           ,[geofence.status]
+           ,[gnss.antenna.status]
+           ,[gnss.type]
+           ,[gsm.signal.level]
+           ,[gsm.sim.status]
+           ,[ibutton.connected.status]
+           ,[ident]
+           ,[incline.event]
+           ,[internal.battery.voltage.limit.lower.status]
+           ,[internal.bus.supply.voltage.range.outside.status]
+           ,[movement.status]
+           ,[peer]
+           ,[position.altitude]
+           ,[position.direction]
+           ,[position.hdop]
+           ,[position.latitude]
+           ,[position.longitude]
+           ,[position.satellites]
+           ,[position.speed]
+           ,[position.valid]
+           ,[protocol.id]
+           ,[record.seqnum]
+           ,[server.timestamp]
+           ,[shock.event]
+           ,[timestamp]
+           ,[turn.acceleration]
+           ,[x.acceleration]
+           ,[y.acceleration]
+           ,[z.acceleration])
+     VALUES
+           (<absolute.acceleration, int,>
+           ,<alarm.event, bit,>
+           ,<alarm.mode.status, int,>
+           ,<brake.acceleration, int,>
+           ,<bump.acceleration, numeric(18,0),>
+           ,<channel.id, int,>
+           ,<device.id, int,>
+           ,<device.name, nvarchar(50),>
+           ,<device.type.id, int,>
+           ,<engine.ignition.status, bit,>
+           ,<external.powersource.voltage, numeric(18,0),>
+           ,<external.powersource.voltage.range.outside.status, bit,>
+           ,<geofence.status, bit,>
+           ,<gnss.antenna.status, bit,>
+           ,<gnss.type, nvarchar(50),>
+           ,<gsm.signal.level, int,>
+           ,<gsm.sim.status, bit,>
+           ,<ibutton.connected.status, bit,>
+           ,<ident, nvarchar(255),>
+           ,<incline.event, bit,>
+           ,<internal.battery.voltage.limit.lower.status, bit,>
+           ,<internal.bus.supply.voltage.range.outside.status, int,>
+           ,<movement.status, bit,>
+           ,<peer, nvarchar(50),>
+           ,<position.altitude, numeric(6,2),>
+           ,<position.direction, numeric(6,2),>
+           ,<position.hdop, numeric(6,2),>
+           ,<position.latitude, numeric(8,6),>
+           ,<position.longitude, numeric(8,6),>
+           ,<position.satellites, numeric(6,2),>
+           ,<position.speed, numeric(6,2),>
+           ,<position.valid, bit,>
+           ,<protocol.id, int,>
+           ,<record.seqnum, int,>
+           ,<server.timestamp, numeric(18,6),>
+           ,<shock.event, bit,>
+           ,<timestamp, bigint,>
+           ,<turn.acceleration, int,>
+           ,<x.acceleration, numeric(18,15),>
+           ,<y.acceleration, numeric(18,15),>
+           ,<z.acceleration, numeric(18,15),>)";
+
+            int rows = 0;
 
             foreach (var a in dobj["result"])
             {
@@ -345,8 +534,18 @@ namespace flespi_simle
                 {
                     //Print(fileName, "-------------- " + field + " ---------------");
                     Print(fileName, a[field].ToString());
+
+                    sqlCommand.Parameters.Add("@["+field+"]", SqlDbType.Int);
+                    sqlCommand.Parameters["@["+field+"]"].Value = a[field].ToString();
+
+                    
                 }
+                sqlCommand.CommandText = "";
+                rows += sqlCommand.ExecuteNonQuery();
+                //sqlCommand.Parameters.Clear();
             }
+            sqlConnection.Close();
+            Print(fileName, "Row(s) affected " + rows.ToString());
         }
         static void test4()
         {
@@ -723,27 +922,87 @@ catch
         }
         static void client_MqttMsgSubscribed(object sender, MqttMsgSubscribedEventArgs e)
         {
-            Console.WriteLine("Subscribed for id = " + e.MessageId);
+            Print("received.txt", "Subscribed for id = " + e.MessageId);
         }
         static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
-            Console.WriteLine("Received = " + Encoding.UTF8.GetString(e.Message) + " on topic " + e.Topic);
+            settings(e.Topic, "{\"result\":[" + Encoding.UTF8.GetString(e.Message) + "]}");
+            //Print("received.txt", "Received = " + Encoding.UTF8.GetString(e.Message) + " on topic " + e.Topic);
             //Print("Received.txt", Encoding.UTF8.GetString(e.Message) + " " + e.Topic);
-            test3("{\"result\":["+Encoding.UTF8.GetString(e.Message)+"]}");
+            ///// работает test3("{\"result\":["+Encoding.UTF8.GetString(e.Message)+"]}");
         }
         static void client_MqttMsgUnsubscribed(object sender, MqttMsgUnsubscribedEventArgs e)
         {
             Console.WriteLine("Unsubscribed for id = " + e.MessageId);
         }
+        static void Parse2(string topic, string message)
+        {
+
+        }
         static void Parse(string topic, string message)
         {
             string [] headers = topic.Split('/');
-            string setting = headers[6];
-            string device = headers[4];
-            switch(setting)
+            string device_id = headers[4];
+            string field = headers[6];
+            string value = message;
+            SqlConnection sqlConnection = new SqlConnection(conStr);
+            sqlConnection.Open();
+            SqlCommand sqlCommand = new SqlCommand("Select recid From Telemetry Where [device.id] = " + device_id, sqlConnection);
+            int rows = 0;
+
+            Object o = sqlCommand.ExecuteScalar();
+            sqlCommand.CommandText = "SELECT t.name FROM sys.columns AS c JOIN sys.types AS t ON c.user_type_id = t.user_type_id WHERE c.object_id = OBJECT_ID('Telemetry') and c.name = '" + field + "'";
+            Object t = sqlCommand.ExecuteScalar();
+            string s = "";
+            if (t.ToString() == "nvarchar")
             {
-                case "sin4": break;
-                default: break;
+                s = "'";
+            }
+            if (value == "true")
+                value = "1";
+            if (value == "false")
+                value = "0";
+            if (o == null)
+            {
+                sqlCommand.CommandText = "Insert Into Telemetry ([device.id], ["+field+"]) Values (" + device_id + ", " + s+value+s + ")";
+            }
+            else
+            {
+                sqlCommand.CommandText = "Update Telemetry Set [" + field + "] = " + s+value+s + " Where [device.id] = " + device_id;
+            }
+
+            rows = sqlCommand.ExecuteNonQuery();
+
+            sqlConnection.Close();
+        }
+        static void settings(string topic, string message)
+        {
+            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            string json = message;
+            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
+
+            string[] headers = topic.Split('/');
+
+            string field = headers[6];
+
+            foreach (var a in dobj["result"])
+            {
+                switch (field)
+                {
+                    case "sin4":
+                        Print("settings.txt", a["delay"].ToString());
+                        Print("settings.txt", a["sms"].ToString());
+                        break;
+                    case "sout0":
+                        Print("settings.txt", a["amode"]["count"].ToString());
+                        Print("settings.txt", a["amode"]["dur"].ToString());
+                        break;
+                    default: break;
+                }
+                //Print(fileName, a["telemetry"]["absolute.acceleration"]["ts"].ToString());
+
+                Print("settings.txt", "topic: " + topic + " message " + message);
+                Print("settings.txt", "------------------------------------------------------");
             }
         }
         static void ClientReceiveTest1()
@@ -752,6 +1011,7 @@ catch
             client = new MqttClient(BrokerAddress);
 
             // register a callback-function (we have to implement, see below) which is called by the library when a message was received
+            client.MqttMsgSubscribed += client_MqttMsgSubscribed;
             client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
 
             // use a unique id as client id, each time we start the application
@@ -761,9 +1021,13 @@ catch
 
             Console.WriteLine(client.IsConnected ? "Connected" : "Хуй там");
 
-            ushort code = client.Subscribe(new string[] { "flespi/message/gw/devices/361202" }, new byte[] { 2 });
+            //*** работает ***
+            //ushort code = client.Subscribe(new string[] { "flespi/message/gw/devices/361202" }, new byte[] { 2 });
+
             //ushort code2 = client.Subscribe(new string[] { "flespi/state/gw/devices/361201" }, new byte[] { 2 });
-            //ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/+/settings/+" }, new byte[] { 2 });
+            ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/settings/+" }, new byte[] { 2 });
+
+            //ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/telemetry/+" }, new byte[] { 2 });
         }
     }
 }

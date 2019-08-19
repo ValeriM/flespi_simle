@@ -24,7 +24,6 @@ namespace flespi_simle
     {
         static readonly string token = "Authorization: FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";
         //token = "Authorization: FlespiToken UIy8bexWRWLVX3H3yJFCkycRTNI3xRognMeoOBbvlKf8EK20kvrsRraz4GsqnGwB";
-        //token = "Authorization: FlespiToken lCG8yJPUWRc9awe3M2AaTuKcqd5N4Nvgd1cByPklwkiuGmogcOgW6QWmURXOujSx";
         static readonly string log = "flespi_simle.txt";
         static MqttClient client;
         static string clientId;
@@ -34,9 +33,9 @@ namespace flespi_simle
         {
             //string conStr = Properties.Settings.Default.Connection;
 
-            Print(log, conStr);
+            zu.Print(log, conStr);
 
-            Print(log, "Start " + DateTime.Now.ToString());
+            zu.Print(log, "Start " + DateTime.Now.ToString());
 
             string[] menu =
             {
@@ -69,7 +68,7 @@ namespace flespi_simle
                 Console.WriteLine();
                 //int menuitem = Convert.ToInt32(ch.KeyChar);
                 //if (menuitem != 27)
-                //    Print(log, "Selected " + menu[(menuitem-48)]);
+                //    zu.Print(log, "Selected " + menu[(menuitem-48)]);
                 switch (ch.KeyChar)
                 {
                     case '1': Client("https://flespi.io/gw/devices/all"); break;
@@ -119,16 +118,16 @@ namespace flespi_simle
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             foreach (var a in dobj["result"])
             {
-                Print(fileName, a["cid"].ToString());
-                Print(fileName, a["commands_ttl"].ToString());
+                zu.Print(fileName, a["cid"].ToString());
+                zu.Print(fileName, a["commands_ttl"].ToString());
                 object o = a["configuration"];
-                Print(fileName, a["configuration"].ToString());
-                Print(fileName, a["enabled"].ToString());
-                Print(fileName, a["id"].ToString());
-                Print(fileName, a["messages_ttl"].ToString());
-                Print(fileName, a["name"].ToString());
-                Print(fileName, a["protocol_id"].ToString());
-                Print(fileName, a["uri"].ToString());
+                zu.Print(fileName, a["configuration"].ToString());
+                zu.Print(fileName, a["enabled"].ToString());
+                zu.Print(fileName, a["id"].ToString());
+                zu.Print(fileName, a["messages_ttl"].ToString());
+                zu.Print(fileName, a["name"].ToString());
+                zu.Print(fileName, a["protocol_id"].ToString());
+                zu.Print(fileName, a["uri"].ToString());
             }
         }
         static void test8()
@@ -141,10 +140,10 @@ namespace flespi_simle
             string json = ReadFile("json8i.txt"); dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             foreach (var a in dobj["result"])
             {
-                Print(fileName, a["id"].ToString());
+                zu.Print(fileName, a["id"].ToString());
                 //object o = a["snapshots"];
                 foreach(var v in a["snapshots"])
-                Print(fileName, v.ToString());
+                zu.Print(fileName, v.ToString());
             }
         }
         static void test1()
@@ -165,14 +164,14 @@ namespace flespi_simle
 
             foreach(var a in dobj["result"])
             {
-                Print(fileName, a["cid"].ToString());
-                Print(fileName, a["configuration"]["ident"]);
-                Print(fileName, a["device_type_id"].ToString());
-                Print(fileName, a["id"].ToString());
-                //Print(fileName, a["ident"].ToString());
-                Print(fileName, a["messages_ttl"].ToString());
-                Print(fileName, a["name"].ToString());
-                //Print(fileName, a["phone"].ToString());
+                zu.Print(fileName, a["cid"].ToString());
+                zu.Print(fileName, a["configuration"]["ident"]);
+                zu.Print(fileName, a["device_type_id"].ToString());
+                zu.Print(fileName, a["id"].ToString());
+                //zu.Print(fileName, a["ident"].ToString());
+                zu.Print(fileName, a["messages_ttl"].ToString());
+                zu.Print(fileName, a["name"].ToString());
+                //zu.Print(fileName, a["phone"].ToString());
 
                 sqlCommand.Parameters.Add("@cid", SqlDbType.Int);
                 sqlCommand.Parameters["@cid"].Value = a["cid"].ToString();
@@ -204,7 +203,7 @@ namespace flespi_simle
                 sqlCommand.Parameters.Clear();
             }
             sqlConnection.Close();
-            Print(fileName, "Row(s) affected " + rows.ToString());
+            zu.Print(fileName, "Row(s) affected " + rows.ToString());
         }
         /**/
         static void test2()
@@ -217,71 +216,18 @@ namespace flespi_simle
 
             foreach (var a in dobj["result"])
             {
-                Print(fileName, a["event_code"].ToString());
-                Print(fileName, a["event_origin"].ToString());
-                Print(fileName, a["event_text"].ToString());
-                Print(fileName, a["id"].ToString());
-                Print(fileName, a["ident"].ToString());
-                Print(fileName, a["source"].ToString());
-                Print(fileName, a["timestamp"].ToString());
-                Print(fileName, a["transport"].ToString()); 
+                zu.Print(fileName, a["event_code"].ToString());
+                zu.Print(fileName, a["event_origin"].ToString());
+                zu.Print(fileName, a["event_text"].ToString());
+                zu.Print(fileName, a["id"].ToString());
+                zu.Print(fileName, a["ident"].ToString());
+                zu.Print(fileName, a["source"].ToString());
+                zu.Print(fileName, a["timestamp"].ToString());
+                zu.Print(fileName, a["transport"].ToString()); 
             }
         }
         /**/
         //
-        class Test3
-        {
-            int id;
-            int absolute_acceleration;
-            int ain_1;
-            int ain_2;
-            bool alarm_event;
-            bool alarm_mode_status;
-            decimal battery_voltage;
-            decimal brake_acceleration;
-            decimal bump_acceleration;
-            int channel_id;
-            int device_id;
-            string device_name;
-            int device_temperature;
-            int device_type_id;
-            bool engine_ignition_status;
-            decimal external_powersource_voltage;
-            bool external_powersource_voltage_range_outside_status;
-            bool geofence_status;
-            bool gnss_antenna_status;
-            string gnss_type;
-            int gsm_signal_level;
-            bool gsm_sim_status;
-            bool ibutton_connected_status;
-            long ident;
-            bool incline_event;
-            bool internal_battery_voltage_limit_lower_status;
-            bool internal_bus_supply_voltage_range_outside_status;
-            bool movement_status;
-            string peer;
-            decimal position_altitude;
-            decimal position_direction;
-            decimal position_hdop;
-            decimal position_latitude;
-            decimal position_longitude;
-            int position_satellites;
-            int position_speed;
-            bool position_valid;
-            int protocol_id;
-            int record_seqnum;
-            int rs232_sensor_value_0;
-            int rs485_fuel_sensor_level_0;
-            int rs485_fuel_sensor_level_1;
-            int rs485_fuel_sensor_level_2;
-            decimal server_timestamp;
-            bool shock_event;
-            decimal timestamp;
-            int turn_acceleration;
-            double x_acceleration;
-            double y_acceleration;
-            double z_acceleration;
-        };
         static void test_zero()
         {
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
@@ -289,47 +235,47 @@ namespace flespi_simle
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             Dictionary<string, SqlDbType> fields = new Dictionary<string, SqlDbType>
             {
-               {"absolute.acceleration", SqlDbType.Int},//0
-               {"alarm.event", SqlDbType.Bit },//1
-               {"alarm.mode.status", SqlDbType.Bit},//2
-               {"brake.acceleration", SqlDbType.Int},//3
-               { "bump.acceleration",SqlDbType.Real },//4
-               { "channel.id", SqlDbType.Int},//5
-               { "device.id", SqlDbType.Int},//6
-               { "device.name",SqlDbType.VarChar },//7
-               { "device.type.id",SqlDbType.Int },//8
-               { "engine.ignition.status",SqlDbType.Bit },//9
-                { "external.powersource.voltage",SqlDbType.Real },//10
-                { "external.powersource.voltage.range.outside.status",SqlDbType.Bit },//11
-                { "geofence.status",SqlDbType.Bit },//12
-                { "gnss.antenna.status",SqlDbType.Bit },//13
-                { "gnss.type",SqlDbType.VarChar },//14
-                { "gsm.signal.level",SqlDbType.Int },//15
-                { "gsm.sim.status",SqlDbType.Bit },//16
-                { "ibutton.connected.status",SqlDbType.Bit },//17
+               {"absolute_acceleration", SqlDbType.Int},//0
+               {"alarm_event", SqlDbType.Bit },//1
+               {"alarm_mode_status", SqlDbType.Bit},//2
+               {"brake_acceleration", SqlDbType.Int},//3
+               { "bump_acceleration",SqlDbType.Real },//4
+               { "channel_id", SqlDbType.Int},//5
+               { "device_id", SqlDbType.Int},//6
+               { "device_name",SqlDbType.VarChar },//7
+               { "device_type_id",SqlDbType.Int },//8
+               { "engine_ignition_status",SqlDbType.Bit },//9
+                { "external_powersource_voltage",SqlDbType.Real },//10
+                { "external_powersource_voltage_range_outside_status",SqlDbType.Bit },//11
+                { "geofence_status",SqlDbType.Bit },//12
+                { "gnss_antenna_status",SqlDbType.Bit },//13
+                { "gnss_type",SqlDbType.VarChar },//14
+                { "gsm_signal_level",SqlDbType.Int },//15
+                { "gsm_sim_status",SqlDbType.Bit },//16
+                { "ibutton_connected_status",SqlDbType.Bit },//17
                 { "ident",SqlDbType.VarChar },//18
-                { "incline.event",SqlDbType.Bit },//19
-                { "internal.battery.voltage.limit.lower.status",SqlDbType.Bit },//20
-                { "internal.bus.supply.voltage.range.outside.status",SqlDbType.Bit },//21
-                { "movement.status",SqlDbType.Bit },//22
+                { "incline_event",SqlDbType.Bit },//19
+                { "internal_battery_voltage_limit_lower_status",SqlDbType.Bit },//20
+                { "internal_bus_supply_voltage_range_outside_status",SqlDbType.Bit },//21
+                { "movement_status",SqlDbType.Bit },//22
                 { "peer",SqlDbType.VarChar },//23
-                { "position.altitude",SqlDbType.Real },//24
-                { "position.direction",SqlDbType.Real },//25
-                { "position.hdop",SqlDbType.Real },//26
-                { "position.latitude",SqlDbType.Real },//27
-                { "position.longitude",SqlDbType.Real },//28
-                { "position.satellites",SqlDbType.Real },//29
-                { "position.speed",SqlDbType.Real },//30
-                { "position.valid",SqlDbType.Bit },//31
-                { "protocol.id",SqlDbType.Int },//32
-                { "record.seqnum",SqlDbType.Int },//33
-                { "server.timestamp",SqlDbType.Real },//34
-                { "shock.event",SqlDbType.Bit },//35
+                { "position_altitude",SqlDbType.Real },//24
+                { "position_direction",SqlDbType.Real },//25
+                { "position_hdop",SqlDbType.Real },//26
+                { "position_latitude",SqlDbType.Real },//27
+                { "position_longitude",SqlDbType.Real },//28
+                { "position_satellites",SqlDbType.Real },//29
+                { "position_speed",SqlDbType.Real },//30
+                { "position_valid",SqlDbType.Bit },//31
+                { "protocol_id",SqlDbType.Int },//32
+                { "record_seqnum",SqlDbType.Int },//33
+                { "server_timestamp",SqlDbType.Real },//34
+                { "shock_event",SqlDbType.Bit },//35
                 { "timestamp",SqlDbType.BigInt },//36
-                { "turn.acceleration",SqlDbType.Int },//37
-                { "x.acceleration",SqlDbType.Real },//38
-                { "y.acceleration",SqlDbType.Real },//39
-                { "z.acceleration",SqlDbType.Real }//40
+                { "turn_acceleration",SqlDbType.Int },//37
+                { "x_acceleration",SqlDbType.Real },//38
+                { "y_acceleration",SqlDbType.Real },//39
+                { "z_acceleration",SqlDbType.Real }//40
             };
 
             SqlConnection sqlConnection = new SqlConnection(conStr);
@@ -365,7 +311,7 @@ namespace flespi_simle
                     //sqlCommand.Parameters["@[" + field.Key + "]"].Value = a[field.Key].ToString();
                     sqlCommand.Parameters.Add("@p"+rows.ToString(), field.Value);
                     sqlCommand.Parameters["@p"+rows.ToString()].Value = a[field.Key].ToString();
-                    Print("log.txt", field.Key + " = " +a[field.Key].ToString());
+                    zu.Print("log.txt", field.Key + " = " +a[field.Key].ToString());
                     rows++;
                     if (rows == rmax) break;
                 }
@@ -388,55 +334,55 @@ namespace flespi_simle
 
             string[] fields =
             {
-                "absolute.acceleration",//0
-                //"ain.1",
-                //"ain.2",
-                "alarm.event",//1
-                "alarm.mode.status",//2
-                //"battery.voltage",
-                "brake.acceleration",//3
-                "bump.acceleration",//4
-                "channel.id",//5
-                "device.id",//6
-                "device.name",//7
-                //"device.temperature",
-                "device.type.id",//
-                "engine.ignition.status",//
-                "external.powersource.voltage",//
-                "external.powersource.voltage.range.outside.status",//
-                "geofence.status",//
-                "gnss.antenna.status",//
-                "gnss.type",//
-                "gsm.signal.level",//
-                "gsm.sim.status",//
-                "ibutton.connected.status",//
+                "absolute_acceleration",//0
+                //"ain_1",
+                //"ain_2",
+                "alarm_event",//1
+                "alarm_mode_status",//2
+                //"battery_voltage",
+                "brake_acceleration",//3
+                "bump_acceleration",//4
+                "channel_id",//5
+                "device_id",//6
+                "device_name",//7
+                //"device_temperature",
+                "device_type_id",//
+                "engine_ignition_status",//
+                "external_powersource_voltage",//
+                "external_powersource_voltage_range_outside_status",//
+                "geofence_status",//
+                "gnss_antenna_status",//
+                "gnss_type",//
+                "gsm_signal_level",//
+                "gsm_sim_status",//
+                "ibutton_connected_status",//
                 "ident",//
-                "incline.event",//
-                "internal.battery.voltage.limit.lower.status",//
-                "internal.bus.supply.voltage.range.outside.status",//
-                "movement.status",//
+                "incline_event",//
+                "internal_battery_voltage_limit_lower_status",//
+                "internal_bus_supply_voltage_range_outside_status",//
+                "movement_status",//
                 "peer",//
-                "position.altitude",//
-                "position.direction",//
-                "position.hdop",//
-                "position.latitude",//
-                "position.longitude",//
-                "position.satellites",//
-                "position.speed",//
-                "position.valid",//
-                "protocol.id",//
-                "record.seqnum",//
-                //"rs232.sensor.value.0",
-                //"rs485.fuel.sensor.level.0",
-                //"rs485.fuel.sensor.level.1",
-                //"rs485.fuel.sensor.level.2",
-                "server.timestamp",//
-                "shock.event",//
+                "position_altitude",//
+                "position_direction",//
+                "position_hdop",//
+                "position_latitude",//
+                "position_longitude",//
+                "position_satellites",//
+                "position_speed",//
+                "position_valid",//
+                "protocol_id",//
+                "record_seqnum",//
+                //"rs232_sensor_value_0",
+                //"rs485_fuel_sensor_level_0",
+                //"rs485_fuel_sensor_level_1",
+                //"rs485_fuel_sensor_level_2",
+                "server_timestamp",//
+                "shock_event",//
                 "timestamp",//
-                "turn.acceleration",//
-                "x.acceleration",//
-                "y.acceleration",//
-                "z.acceleration"//
+                "turn_acceleration",//
+                "x_acceleration",//
+                "y_acceleration",//
+                "z_acceleration"//
             };
             SqlConnection sqlConnection = new SqlConnection(conStr);
             sqlConnection.Open();
@@ -532,8 +478,8 @@ namespace flespi_simle
             {
                 foreach (var field in fields)
                 {
-                    //Print(fileName, "-------------- " + field + " ---------------");
-                    Print(fileName, a[field].ToString());
+                    //zu.Print(fileName, "-------------- " + field + " ---------------");
+                    zu.Print(fileName, a[field].ToString());
 
                     sqlCommand.Parameters.Add("@["+field+"]", SqlDbType.Int);
                     sqlCommand.Parameters["@["+field+"]"].Value = a[field].ToString();
@@ -545,7 +491,7 @@ namespace flespi_simle
                 //sqlCommand.Parameters.Clear();
             }
             sqlConnection.Close();
-            Print(fileName, "Row(s) affected " + rows.ToString());
+            zu.Print(fileName, "Row(s) affected " + rows.ToString());
         }
         static void test4()
         {
@@ -561,18 +507,18 @@ namespace flespi_simle
             {
                 foreach(var v in a["address"])
                 {
-                    Print(fileName, v.ToString());
+                    zu.Print(fileName, v.ToString());
                 }
                 foreach(var v in a["current"])
                 {
-                    Print(fileName, v.ToString());
+                    zu.Print(fileName, v.ToString());
                 }
-                Print(fileName, a["device_id"].ToString());
-                Print(fileName, a["mode"].ToString());
-                Print(fileName, a["name"].ToString());
-                //Print(fileName, a["pending"].ToString());
-                Print(fileName, a["tab"].ToString());
-                Print(fileName, a["updated"].ToString());
+                zu.Print(fileName, a["device_id"].ToString());
+                zu.Print(fileName, a["mode"].ToString());
+                zu.Print(fileName, a["name"].ToString());
+                //zu.Print(fileName, a["pending"].ToString());
+                zu.Print(fileName, a["tab"].ToString());
+                zu.Print(fileName, a["updated"].ToString());
             }
         }
         static void test5()
@@ -585,116 +531,116 @@ namespace flespi_simle
 
             foreach (var a in dobj["result"])
             {
-                Print(fileName, a["id"].ToString());
-                Print(fileName, a["telemetry"]["absolute.acceleration"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["absolute.acceleration"]["value"].ToString());
-                Print(fileName, a["telemetry"]["ain.1"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["ain.1"]["value"].ToString());
-                Print(fileName, a["telemetry"]["ain.2"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["ain.2"]["value"].ToString());
-                Print(fileName, a["telemetry"]["alarm.event"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["alarm.event"]["value"].ToString());
-                Print(fileName, a["telemetry"]["alarm.mode.status"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["alarm.mode.status"]["value"].ToString());
-                Print(fileName, a["telemetry"]["battery.voltage"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["battery.voltage"]["value"].ToString());
-                Print(fileName, a["telemetry"]["brake.acceleration"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["brake.acceleration"]["value"].ToString());
+                zu.Print(fileName, a["id"].ToString());
+                zu.Print(fileName, a["telemetry"]["absolute.acceleration"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["absolute.acceleration"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["ain.1"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["ain.1"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["ain.2"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["ain.2"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["alarm.event"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["alarm.event"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["alarm.mode.status"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["alarm.mode.status"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["battery.voltage"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["battery.voltage"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["brake.acceleration"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["brake.acceleration"]["value"].ToString());
 
-                Print(fileName, a["telemetry"]["bump.acceleration"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["bump.acceleration"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["bump.acceleration"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["bump.acceleration"]["value"].ToString());
 
-                Print(fileName, a["telemetry"]["device.temperature"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["device.temperature"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["device.temperature"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["device.temperature"]["value"].ToString());
 
-                Print(fileName, a["telemetry"]["engine.ignition.status"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["engine.ignition.status"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["engine.ignition.status"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["engine.ignition.status"]["value"].ToString());
 
-                Print(fileName, a["telemetry"]["external.powersource.voltage"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["external.powersource.voltage"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["external.powersource.voltage"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["external.powersource.voltage"]["value"].ToString());
 
-                Print(fileName, a["telemetry"]["external.powersource.voltage.range.outside.status"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["external.powersource.voltage.range.outside.status"]["value"].ToString());
-                Print(fileName, a["telemetry"]["geofence.status"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["geofence.status"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["external.powersource.voltage.range.outside.status"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["external.powersource.voltage.range.outside.status"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["geofence.status"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["geofence.status"]["value"].ToString());
 
-                Print(fileName, a["telemetry"]["gnss.antenna.status"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["gnss.antenna.status"]["value"].ToString());
-                Print(fileName, a["telemetry"]["gnss.type"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["gnss.type"]["value"].ToString());
-                Print(fileName, a["telemetry"]["gsm.signal.level"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["gsm.signal.level"]["value"].ToString());
-                Print(fileName, a["telemetry"]["gsm.sim.status"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["gsm.sim.status"]["value"].ToString());
-                Print(fileName, a["telemetry"]["hardware.version.enum"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["hardware.version.enum"]["value"].ToString());
-                Print(fileName, a["telemetry"]["ibutton.connected.status"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["ibutton.connected.status"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["gnss.antenna.status"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["gnss.antenna.status"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["gnss.type"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["gnss.type"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["gsm.signal.level"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["gsm.signal.level"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["gsm.sim.status"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["gsm.sim.status"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["hardware.version.enum"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["hardware.version.enum"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["ibutton.connected.status"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["ibutton.connected.status"]["value"].ToString());
 
-                Print(fileName, a["telemetry"]["ident"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["ident"]["value"].ToString());
-                Print(fileName, a["telemetry"]["incline.event"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["incline.event"]["value"].ToString());
-                Print(fileName, a["telemetry"]["internal.battery.voltage.limit.lower.status"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["internal.battery.voltage.limit.lower.status"]["value"].ToString());
-                Print(fileName, a["telemetry"]["internal.bus.supply.voltage.range.outside.status"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["internal.bus.supply.voltage.range.outside.status"]["value"].ToString());
-                Print(fileName, a["telemetry"]["movement.status"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["movement.status"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["ident"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["ident"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["incline.event"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["incline.event"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["internal.battery.voltage.limit.lower.status"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["internal.battery.voltage.limit.lower.status"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["internal.bus.supply.voltage.range.outside.status"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["internal.bus.supply.voltage.range.outside.status"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["movement.status"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["movement.status"]["value"].ToString());
 
-                Print(fileName, a["telemetry"]["peer"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["peer"]["value"].ToString());
-                Print(fileName, a["telemetry"]["position"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["position"]["value"]["altitude"].ToString());
-                Print(fileName, a["telemetry"]["position"]["value"]["direction"].ToString());
-                Print(fileName, a["telemetry"]["position"]["value"]["hdop"].ToString());
-                Print(fileName, a["telemetry"]["position"]["value"]["latitude"].ToString());
-                Print(fileName, a["telemetry"]["position"]["value"]["longitude"].ToString());
-                Print(fileName, a["telemetry"]["position"]["value"]["satellites"].ToString());
-                Print(fileName, a["telemetry"]["position"]["value"]["speed"].ToString());
-                Print(fileName, a["telemetry"]["position"]["value"]["valid"].ToString());
-                Print(fileName, a["telemetry"]["position.altitude"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["position.altitude"]["value"].ToString());
-                Print(fileName, a["telemetry"]["position.direction"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["position.direction"]["value"].ToString());
-                Print(fileName, a["telemetry"]["position.hdop"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["position.hdop"]["value"].ToString());
-                Print(fileName, a["telemetry"]["position.latitude"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["position.latitude"]["value"].ToString());
-                Print(fileName, a["telemetry"]["position.longitude"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["position.longitude"]["value"].ToString());
-                Print(fileName, a["telemetry"]["position.satellites"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["position.satellites"]["value"].ToString());
-                Print(fileName, a["telemetry"]["position.speed"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["position.speed"]["value"].ToString());
-                Print(fileName, a["telemetry"]["position.valid"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["position.valid"]["value"].ToString());
-                Print(fileName, a["telemetry"]["record.seqnum"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["record.seqnum"]["value"].ToString());
-                Print(fileName, a["telemetry"]["rs232.sensor.value.0"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["rs232.sensor.value.0"]["value"].ToString());
-                Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.0"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.0"]["value"].ToString());
-                Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.1"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.1"]["value"].ToString());
-                Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.2"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.2"]["value"].ToString());
-                Print(fileName, a["telemetry"]["server.timestamp"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["server.timestamp"]["value"].ToString());
-                Print(fileName, a["telemetry"]["shock.event"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["shock.event"]["value"].ToString());
-                Print(fileName, a["telemetry"]["software.version.enum"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["software.version.enum"]["value"].ToString());
-                Print(fileName, a["telemetry"]["timestamp"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["timestamp"]["value"].ToString());
-                Print(fileName, a["telemetry"]["turn.acceleration"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["turn.acceleration"]["value"].ToString());
-                Print(fileName, a["telemetry"]["x.acceleration"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["x.acceleration"]["value"].ToString());
-                Print(fileName, a["telemetry"]["y.acceleration"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["y.acceleration"]["value"].ToString());
-                Print(fileName, a["telemetry"]["z.acceleration"]["ts"].ToString());
-                Print(fileName, a["telemetry"]["z.acceleration"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["peer"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["peer"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["position"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["position"]["value"]["altitude"].ToString());
+                zu.Print(fileName, a["telemetry"]["position"]["value"]["direction"].ToString());
+                zu.Print(fileName, a["telemetry"]["position"]["value"]["hdop"].ToString());
+                zu.Print(fileName, a["telemetry"]["position"]["value"]["latitude"].ToString());
+                zu.Print(fileName, a["telemetry"]["position"]["value"]["longitude"].ToString());
+                zu.Print(fileName, a["telemetry"]["position"]["value"]["satellites"].ToString());
+                zu.Print(fileName, a["telemetry"]["position"]["value"]["speed"].ToString());
+                zu.Print(fileName, a["telemetry"]["position"]["value"]["valid"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.altitude"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.altitude"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.direction"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.direction"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.hdop"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.hdop"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.latitude"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.latitude"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.longitude"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.longitude"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.satellites"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.satellites"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.speed"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.speed"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.valid"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["position.valid"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["record.seqnum"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["record.seqnum"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["rs232.sensor.value.0"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["rs232.sensor.value.0"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.0"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.0"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.1"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.1"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.2"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.2"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["server.timestamp"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["server.timestamp"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["shock.event"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["shock.event"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["software.version.enum"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["software.version.enum"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["timestamp"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["timestamp"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["turn.acceleration"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["turn.acceleration"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["x.acceleration"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["x.acceleration"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["y.acceleration"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["y.acceleration"]["value"].ToString());
+                zu.Print(fileName, a["telemetry"]["z.acceleration"]["ts"].ToString());
+                zu.Print(fileName, a["telemetry"]["z.acceleration"]["value"].ToString());
             }
         }
         /**/
@@ -702,21 +648,7 @@ namespace flespi_simle
          * "id\",
          * "telemetry":{\"absolute.acceleration\":{\"ts\":1564740692,\"value\":0},\"ain.1\":{\"ts\":1564740692,\"value\":0},\"ain.2\":{\"ts\":1564740692,\"value\":0},\"alarm.event\":{\"ts\":1564740692,\"value\":false},\"alarm.mode.status\":{\"ts\":1564740692,\"value\":false},\"battery.voltage\":{\"ts\":1564740692,\"value\":3.512},\"brake.acceleration\":{\"ts\":1564740692,\"value\":0},\"bump.acceleration\":{\"ts\":1564740692,\"value\":0.22},\"device.temperature\":{\"ts\":1564740692,\"value\":38},\"engine.ignition.status\":{\"ts\":1564740692,\"value\":true},\"external.powersource.voltage\":{\"ts\":1564740692,\"value\":0},\"external.powersource.voltage.range.outside.status\":{\"ts\":1564740692,\"value\":true},\"geofence.status\":{\"ts\":1564740692,\"value\":false},\"gnss.antenna.status\":{\"ts\":1564740692,\"value\":true},\"gnss.type\":{\"ts\":1564740692,\"value\":\"glonass\"},\"gsm.signal.level\":{\"ts\":1564740692,\"value\":33},\"gsm.sim.status\":{\"ts\":1564740692,\"value\":false},\"hardware.version.enum\":{\"ts\":1564730883.623066,\"value\":17},\"ibutton.connected.status\":{\"ts\":1564740692,\"value\":false},\"ident\":{\"ts\":1564740692,\"value\":\"865905020671073\"},\"incline.event\":{\"ts\":1564740692,\"value\":false},\"internal.battery.voltage.limit.lower.status\":{\"ts\":1564740692,\"value\":true},\"internal.bus.supply.voltage.range.outside.status\":{\"ts\":1564740692,\"value\":true},\"movement.status\":{\"ts\":1564740692,\"value\":true},\"peer\":{\"ts\":1564740692,\"value\":\"85.140.0.165:43418\"},\"position\":{\"ts\":1564740692,\"value\":{\"altitude\":32,\"direction\":296.6,\"hdop\":0.6000000000000001,\"latitude\":51.446176,\"longitude\":46.107536,\"satellites\":15,\"speed\":0,\"valid\":true}},\"position.altitude\":{\"ts\":1564740692,\"value\":32},\"position.direction\":{\"ts\":1564740692,\"value\":296.6},\"position.hdop\":{\"ts\":1564740692,\"value\":0.6000000000000001},\"position.latitude\":{\"ts\":1564740692,\"value\":51.446176},\"position.longitude\":{\"ts\":1564740692,\"value\":46.107536},\"position.satellites\":{\"ts\":1564740692,\"value\":15},\"position.speed\":{\"ts\":1564740692,\"value\":0},\"position.valid\":{\"ts\":1564740692,\"value\":true},\"record.seqnum\":{\"ts\":1564740692,\"value\":3754},\"rs232.sensor.value.0\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.0\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.1\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.2\":{\"ts\":1564740692,\"value\":0},\"server.timestamp\":{\"ts\":1564740692,\"value\":1564740694.42362},\"shock.event\":{\"ts\":1564740692,\"value\":false},\"software.version.enum\":{\"ts\":1564730883.623066,\"value\":231},\"timestamp\":{\"ts\":1564740692,\"value\":1564740692},\"turn.acceleration\":{\"ts\":1564740692,\"value\":0},\"x.acceleration\":{\"ts\":1564740692,\"value\":-0.9301075268817204},\"y.acceleration\":{\"ts\":1564740692,\"value\":-0.1989247311827957},\"z.acceleration\":{\"ts\":1564740692,\"value\":0.3763440860215054}}}]}*/
         /**/
-        static void test()
-        {
-            string json = @"{
-                'Email': 'james@example.com',
-                'Active': true,
-                'CreatedDate': '2013-01-20T00:00:00Z',
-                'Roles': [
-                {'User':'111','Admin':'123'}
-                ]}";
 
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
-            string result = dobj["Email"].ToString();
-            object result1 = dobj["Roles"][0]["User"];
-        }
         /*
             Если нужна авторизация
             WebClient webClient = new WebClient();
@@ -735,8 +667,8 @@ namespace flespi_simle
                 Stream stream = webClient.OpenRead(URI);
                 StreamReader reader = new StreamReader(stream);
                 request = reader.ReadToEnd();
-                Print(log, new string('-', 80));
-                Print(log, request);
+                zu.Print(log, new string('-', 80));
+                zu.Print(log, request);
                 /*StreamWriter streamWriter = new StreamWriter("snapshot.gz");
                 streamWriter.Write(request);
                 streamWriter.Close();*/
@@ -751,11 +683,11 @@ namespace flespi_simle
                     {
                         case HttpStatusCode.NotFound:
                             //response = null;
-                            Print(log, "Что-то пошло не так!");
+                            zu.Print(log, "Что-то пошло не так!");
                             break;
 
                         default:
-                            Print(log, "Что-то однозначно пошло не так! " + ex.Message);
+                            zu.Print(log, "Что-то однозначно пошло не так! " + ex.Message);
                             //throw ex;
                             break;
                     }
@@ -789,16 +721,16 @@ namespace flespi_simle
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    Print(log, streamReader.ReadToEnd());
+                    zu.Print(log, streamReader.ReadToEnd());
                 }
             }
             catch(WebException ex)
             {
-                Print(log, ex.Message);
+                zu.Print(log, ex.Message);
                 //Console.WriteLine(ex.Response.Headers.ToString());
                 using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
                 {
-                    Print(log, streamReader.ReadToEnd());
+                    zu.Print(log, streamReader.ReadToEnd());
                 }
             }
         }
@@ -830,16 +762,16 @@ catch
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    Print(log, streamReader.ReadToEnd());
+                    zu.Print(log, streamReader.ReadToEnd());
                 }
             }
             catch (WebException ex)
             {
-                Print(log, ex.Message);
+                zu.Print(log, ex.Message);
                 //Console.WriteLine(ex.Response.Headers.ToString());
                 using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
                 {
-                    Print(log, streamReader.ReadToEnd());
+                    zu.Print(log, streamReader.ReadToEnd());
                 }
             }
         }
@@ -858,31 +790,31 @@ catch
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    Print(log, streamReader.ReadToEnd());
+                    zu.Print(log, streamReader.ReadToEnd());
                 }
             }
             catch (WebException ex)
             {
-                Print(log, ex.Message);
+                zu.Print(log, ex.Message);
                 //Console.WriteLine(ex.Response.Headers.ToString());
                 using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
                 {
-                    Print(log, streamReader.ReadToEnd());
+                    zu.Print(log, streamReader.ReadToEnd());
                 }
             }
         }
-        static void Print(string filename, string line, bool console = true)
-        {
-            if (console)
-                Console.WriteLine(line);
-            StreamWriter writer;
-            if (File.Exists(filename))
-                writer = new StreamWriter(filename, true);
-            else
-                writer = new StreamWriter(filename);
-            writer.WriteLine(line);
-            writer.Close();
-        }
+        //static void zu.Print(string filename, string line, bool console = true)
+        //{
+        //    if (console)
+        //        Console.WriteLine(line);
+        //    StreamWriter writer;
+        //    if (File.Exists(filename))
+        //        writer = new StreamWriter(filename, true);
+        //    else
+        //        writer = new StreamWriter(filename);
+        //    writer.WriteLine(line);
+        //    writer.Close();
+        //}
         static string ReadFile(string fileName)
         {
             string ret;
@@ -922,13 +854,13 @@ catch
         }
         static void client_MqttMsgSubscribed(object sender, MqttMsgSubscribedEventArgs e)
         {
-            Print("received.txt", "Subscribed for id = " + e.MessageId);
+            zu.Print("received.txt", "Subscribed for id = " + e.MessageId);
         }
         static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             settings(e.Topic, "{\"result\":[" + Encoding.UTF8.GetString(e.Message) + "]}");
-            //Print("received.txt", "Received = " + Encoding.UTF8.GetString(e.Message) + " on topic " + e.Topic);
-            //Print("Received.txt", Encoding.UTF8.GetString(e.Message) + " " + e.Topic);
+            //zu.Print("received.txt", "Received = " + Encoding.UTF8.GetString(e.Message) + " on topic " + e.Topic);
+            //zu.Print("Received.txt", Encoding.UTF8.GetString(e.Message) + " " + e.Topic);
             ///// работает test3("{\"result\":["+Encoding.UTF8.GetString(e.Message)+"]}");
         }
         static void client_MqttMsgUnsubscribed(object sender, MqttMsgUnsubscribedEventArgs e)
@@ -983,27 +915,140 @@ catch
 
             string[] headers = topic.Split('/');
 
+            string device_id = headers[4];
             string field = headers[6];
+            string dbFields = "";
+            string a_dbFields = "";
+            string d_dbFields = "";
+            string e_dbFields = "";
+            string dbValues = "";
+            string value = message;
+            string sql = "";
+
+            string tableName = "Settings";
 
             foreach (var a in dobj["result"])
             {
                 switch (field)
                 {
+                    case "sin0":
+                    case "sin1":
+                    case "sin2":
+                    case "sin3":
                     case "sin4":
-                        Print("settings.txt", a["delay"].ToString());
-                        Print("settings.txt", a["sms"].ToString());
+                    case "sin5":
+                    case "sin6":
+                    case "sin7":
+                        zu.Print("settings.txt", a["delay"].ToString());
+                        zu.Print("settings.txt", a["sms"].ToString());
+                        dbFields = "({0}delay, {0}msg, {0}photo, {0}ring, {0}sms, {0}type) Values ({1}, {2}, {3}, {4}, {5}, {6})";
+                        sql = string.Format("Insert Into {7} ({0}delay, {0}msg, {0}photo, {0}ring, {0}sms, {0}type) Values ({1}, {2}, {3}, {4}, {5}, {6})"
+                            , field+"_", a["delay"].ToString(), a["msg"].ToString(), a["photo"].ToString(), a["ring"].ToString(), a["sms"].ToString(), a["type"].ToString(), tableName);
+                        sql = "Insert Into Settings () Values ()";
                         break;
                     case "sout0":
-                        Print("settings.txt", a["amode"]["count"].ToString());
-                        Print("settings.txt", a["amode"]["dur"].ToString());
+                    case "sout1":
+                    case "sout2":
+                    case "sout3":
+                        zu.Print("settings.txt", a["amode"]["count"].ToString());
+                        zu.Print("settings.txt", a["amode"]["dur"].ToString());
+                        a_dbFields = "{0}count, {0}delay, {0}dur, {0}type";
+                        d_dbFields = "{0}count, {0}dur, {0}type";
+                        e_dbFields = "{0}count, {0}dur, {0}type";
                         break;
-                    default: break;
+                    case "cambus":
+                        dbFields = "{0}mode_baundrate, {0}do_not_clean_after_timeout, {0}timeout, {0}type";
+                        break;
+                    case "phones":
+                        dbFields = "{0}number1,{0}number2,{0}number3,{0}number4";
+                        break;
+                    case "wr_period":
+                        dbFields = "{0}move_int, {0}stop_int";
+                        break;
+                    case "network_sim0":
+                    case "network_sim1":
+                        dbFields = "{0}apn, {0}password, {0}username";
+                        break;
+                    case "sign":
+                        dbFields = "{0}datimeout, {0}gwtime, {0}useib";
+                        break;
+                    case "output0":
+                    case "output1":
+                    case "output2":
+                    case "output3":
+                        dbFields = "{0}out_val";
+                        break;
+                    case "backend_server2":
+                        dbFields = "{0}host, {0}port";
+                        break;
+                    case "tracking":
+                        dbFields = "{0}angle, {0}angle_speed, {0}delta_speed, {0}dist, {0}speed";
+                        break;
+                    case "sgps":
+                        dbFields = "{0}radius, {0}ring, {0}sms, {0}speed, {0}timeout, {0}type";
+                        break;
+                    case "guard":
+                        dbFields = "{0}enable";
+                        break;
+                    case "shock":
+                        dbFields = "{0}angle, {0}sens, {0}timeout, {0}type";
+                        break;
+                    case "easylogic_get":
+                        dbFields = "{0}scripts";
+                        break;
+                    case "sacc":
+                        dbFields = "{0}msg, {0}photo, {0}ring, {0}sms, {0}type";
+                        break;
+                    case "headpack1":
+                        dbFields = "{0}tag_01, {0}tag_02, {0}tag_03";
+                        break;
+                    case "mainpack1":
+                        dbFields = ",{0}tag_01,{0}tag_02,{0}tag_03,{0}tag_04,{0}tag_05,{0}tag_06,{0}tag_07,{0}tag_08,{0}tag_09,{0}tag_10,{0}tag_11,{0}tag_12,{0}tag_13,{0}tag_14,{0}tag_15";
+                        break;
+                    default: /*DEvice_UID*/break;
                 }
-                //Print(fileName, a["telemetry"]["absolute.acceleration"]["ts"].ToString());
+                //zu.Print(fileName, a["telemetry"]["absolute.acceleration"]["ts"].ToString());
 
-                Print("settings.txt", "topic: " + topic + " message " + message);
-                Print("settings.txt", "------------------------------------------------------");
+                zu.Print("settings.txt", "topic: " + topic + " message " + message);
+                zu.Print("settings.txt", "------------------------------------------------------");
             }
+            SqlConnection sqlConnection = new SqlConnection(conStr);
+            sqlConnection.Open();
+            SqlCommand sqlCommand = new SqlCommand("Select recid From "+tableName + " Where [device.id] = " + device_id, sqlConnection);
+            int rows = 0;
+
+            Object o = sqlCommand.ExecuteScalar();
+            /*sqlCommand.CommandText = "SELECT t.name FROM sys.columns AS c JOIN sys.types AS t ON c.user_type_id = t.user_type_id WHERE c.object_id = OBJECT_ID('Settings') and c.name = '" + field + "'";
+            Object t = sqlCommand.ExecuteScalar();*/
+            string s = "";
+            if (/*t.ToString()*/getType(tableName, field) == "nvarchar")
+            {
+                s = "'";
+            }
+            if (value == "true")
+                value = "1";
+            if (value == "false")
+                value = "0";
+
+            string getType(string tableNameI, string fieldName)
+            {
+                sqlCommand.CommandText = "SELECT t.name FROM sys.columns AS c JOIN sys.types AS t ON c.user_type_id = t.user_type_id WHERE c.object_id = OBJECT_ID('"+tableNameI+"') and c.name = '" + fieldName + "'";
+                Object t = sqlCommand.ExecuteScalar();
+                return t.ToString();
+            }
+
+            if (o == null)
+            {
+                sqlCommand.CommandText = "Insert Into "+tableName+" ([device.id], [" + field + "]) Values (" + device_id + ", " + s + value + s + ")";
+            }
+            else
+            {
+                sqlCommand.CommandText = "Update " + tableName + " Set [" + field + "] = " + s + value + s + " Where [device.id] = " + device_id;
+            }
+
+            rows = sqlCommand.ExecuteNonQuery();
+
+            sqlConnection.Close();
         }
         static void ClientReceiveTest1()
         {
@@ -1019,13 +1064,13 @@ catch
 
             client.Connect(clientId, "FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17", "");
 
-            Console.WriteLine(client.IsConnected ? "Connected" : "Хуй там");
+            Console.WriteLine(client.IsConnected ? "Connected" : "... там");
 
             //*** работает ***
             //ushort code = client.Subscribe(new string[] { "flespi/message/gw/devices/361202" }, new byte[] { 2 });
 
             //ushort code2 = client.Subscribe(new string[] { "flespi/state/gw/devices/361201" }, new byte[] { 2 });
-            ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/settings/+" }, new byte[] { 2 });
+            ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/settings/sin0" }, new byte[] { 2 });
 
             //ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/telemetry/+" }, new byte[] { 2 });
         }

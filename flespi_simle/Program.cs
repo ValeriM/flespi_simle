@@ -33,9 +33,9 @@ namespace flespi_simle
         {
             //string conStr = Properties.Settings.Default.Connection;
 
-            zu.Print(log, conStr);
+            Utils.Print(log, conStr);
 
-            zu.Print(log, "Start " + DateTime.Now.ToString());
+            Utils.Print(log, "Start " + DateTime.Now.ToString());
 
             string[] menu =
             {
@@ -98,54 +98,13 @@ namespace flespi_simle
             //test6();
             //test8();
             ClientReceiveTest1();
+            //Tests.ClientReceiveTest11(client_MqttMsgPublished, null, null, null);
             //SendTicksRequest();
             //test_zero();
             //Parse("flespi/state/gw/devices/361202/telemetry/z.acceleration", "-0.10101010101");
         }
         /**/
-        class Test6
-        {
 
-        };
-        static void test6()
-        {
-            //string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            
-            string fileName = "json6.txt";
-            //{"result":[{"cid":166848,"commands_ttl":86400,"configuration":null,"enabled":true,"id":11844,"messages_ttl":86400,"name":"QS","protocol_id":1,"uri":"193.193.165.37:30242"}]} 
-            string json = ReadFile("json6i.txt");
-            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
-            foreach (var a in dobj["result"])
-            {
-                zu.Print(fileName, a["cid"].ToString());
-                zu.Print(fileName, a["commands_ttl"].ToString());
-                object o = a["configuration"];
-                zu.Print(fileName, a["configuration"].ToString());
-                zu.Print(fileName, a["enabled"].ToString());
-                zu.Print(fileName, a["id"].ToString());
-                zu.Print(fileName, a["messages_ttl"].ToString());
-                zu.Print(fileName, a["name"].ToString());
-                zu.Print(fileName, a["protocol_id"].ToString());
-                zu.Print(fileName, a["uri"].ToString());
-            }
-        }
-        static void test8()
-        {
-            //string json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-
-            string fileName = "json8.txt";
-            //{"result":[{"cid":166848,"commands_ttl":86400,"configuration":null,"enabled":true,"id":11844,"messages_ttl":86400,"name":"QS","protocol_id":1,"uri":"193.193.165.37:30242"}]} 
-            string json = ReadFile("json8i.txt"); dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
-            foreach (var a in dobj["result"])
-            {
-                zu.Print(fileName, a["id"].ToString());
-                //object o = a["snapshots"];
-                foreach(var v in a["snapshots"])
-                zu.Print(fileName, v.ToString());
-            }
-        }
         static void test1()
         {
             string json = Client("https://flespi.io/gw/devices/all"); //"{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";
@@ -164,13 +123,13 @@ namespace flespi_simle
 
             foreach(var a in dobj["result"])
             {
-                zu.Print(fileName, a["cid"].ToString());
-                zu.Print(fileName, a["configuration"]["ident"]);
-                zu.Print(fileName, a["device_type_id"].ToString());
-                zu.Print(fileName, a["id"].ToString());
+                Utils.Print(fileName, a["cid"].ToString());
+                Utils.Print(fileName, a["configuration"]["ident"]);
+                Utils.Print(fileName, a["device_type_id"].ToString());
+                Utils.Print(fileName, a["id"].ToString());
                 //zu.Print(fileName, a["ident"].ToString());
-                zu.Print(fileName, a["messages_ttl"].ToString());
-                zu.Print(fileName, a["name"].ToString());
+                Utils.Print(fileName, a["messages_ttl"].ToString());
+                Utils.Print(fileName, a["name"].ToString());
                 //zu.Print(fileName, a["phone"].ToString());
 
                 sqlCommand.Parameters.Add("@cid", SqlDbType.Int);
@@ -203,35 +162,16 @@ namespace flespi_simle
                 sqlCommand.Parameters.Clear();
             }
             sqlConnection.Close();
-            zu.Print(fileName, "Row(s) affected " + rows.ToString());
+            Utils.Print(fileName, "Row(s) affected " + rows.ToString());
         }
         /**/
-        static void test2()
-        {
-            //string json = "{\"result\":[{\"event_code\":300,\"event_origin\":\"gw\\/devices\\/361201\",\"event_text\":\"85.140.0.165\\/connected\",\"id\":361201,\"ident\":\"865905020671073\",\"source\":\"85.140.0.165\",\"timestamp\":1564730883.623162,\"transport\":\"tcp\"},{\"close_code\":3,\"duration\":10892,\"event_code\":301,\"event_origin\":\"gw\\/devices\\/361201\",\"event_text\":\"85.140.0.165\\/disconnected\",\"id\":361201,\"ident\":\"865905020671073\",\"msgs\":3022,\"recv\":252588,\"send\":1825,\"source\":\"85.140.0.165\",\"timestamp\":1564741773.556435,\"transport\":\"tcp\"}]}";
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            string json = ReadFile("json2i.txt");
-            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
-            string fileName = "json2.txt";
-
-            foreach (var a in dobj["result"])
-            {
-                zu.Print(fileName, a["event_code"].ToString());
-                zu.Print(fileName, a["event_origin"].ToString());
-                zu.Print(fileName, a["event_text"].ToString());
-                zu.Print(fileName, a["id"].ToString());
-                zu.Print(fileName, a["ident"].ToString());
-                zu.Print(fileName, a["source"].ToString());
-                zu.Print(fileName, a["timestamp"].ToString());
-                zu.Print(fileName, a["transport"].ToString()); 
-            }
-        }
+        
         /**/
         //
         static void test_zero()
         {
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            string json = ReadFile("json3i.txt");
+            string json = Utils.ReadFile("json3i.txt");
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             Dictionary<string, SqlDbType> fields = new Dictionary<string, SqlDbType>
             {
@@ -311,7 +251,7 @@ namespace flespi_simle
                     //sqlCommand.Parameters["@[" + field.Key + "]"].Value = a[field.Key].ToString();
                     sqlCommand.Parameters.Add("@p"+rows.ToString(), field.Value);
                     sqlCommand.Parameters["@p"+rows.ToString()].Value = a[field.Key].ToString();
-                    zu.Print("log.txt", field.Key + " = " +a[field.Key].ToString());
+                    Utils.Print("log.txt", field.Key + " = " +a[field.Key].ToString());
                     rows++;
                     if (rows == rmax) break;
                 }
@@ -479,7 +419,7 @@ namespace flespi_simle
                 foreach (var field in fields)
                 {
                     //zu.Print(fileName, "-------------- " + field + " ---------------");
-                    zu.Print(fileName, a[field].ToString());
+                    Utils.Print(fileName, a[field].ToString());
 
                     sqlCommand.Parameters.Add("@["+field+"]", SqlDbType.Int);
                     sqlCommand.Parameters["@["+field+"]"].Value = a[field].ToString();
@@ -491,13 +431,13 @@ namespace flespi_simle
                 //sqlCommand.Parameters.Clear();
             }
             sqlConnection.Close();
-            zu.Print(fileName, "Row(s) affected " + rows.ToString());
+            Utils.Print(fileName, "Row(s) affected " + rows.ToString());
         }
         static void test4()
         {
             string /*json = "{\"result\":[{\"cid\":152919,\"configuration\":{\"ident\":\"865905020671073\"},\"device_type_id\":57,\"id\":361201,\"ident\":\"865905020671073\",\"messages_ttl\":31536000,\"name\":\"УАЗ а025мо\",\"phone\":\"\"},{\"cid\":152919,\"configuration\":{\"ident\":\"865905021233899\"},\"device_type_id\":57,\"id\":361202,\"ident\":\"865905021233899\",\"messages_ttl\":31536000,\"name\":\"Нива т907хв\",\"phone\":\"\"}]}";*/
 
-            json = ReadFile("json4i.txt");
+            json = Utils.ReadFile("json4i.txt");
 
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
@@ -507,140 +447,140 @@ namespace flespi_simle
             {
                 foreach(var v in a["address"])
                 {
-                    zu.Print(fileName, v.ToString());
+                    Utils.Print(fileName, v.ToString());
                 }
                 foreach(var v in a["current"])
                 {
-                    zu.Print(fileName, v.ToString());
+                    Utils.Print(fileName, v.ToString());
                 }
-                zu.Print(fileName, a["device_id"].ToString());
-                zu.Print(fileName, a["mode"].ToString());
-                zu.Print(fileName, a["name"].ToString());
+                Utils.Print(fileName, a["device_id"].ToString());
+                Utils.Print(fileName, a["mode"].ToString());
+                Utils.Print(fileName, a["name"].ToString());
                 //zu.Print(fileName, a["pending"].ToString());
-                zu.Print(fileName, a["tab"].ToString());
-                zu.Print(fileName, a["updated"].ToString());
+                Utils.Print(fileName, a["tab"].ToString());
+                Utils.Print(fileName, a["updated"].ToString());
             }
         }
         static void test5()
         {
             //string json = "{\"result\":[{\"id\":361201,\"telemetry\":{\"absolute.acceleration\":{\"ts\":1564740692,\"value\":0},\"ain.1\":{\"ts\":1564740692,\"value\":0},\"ain.2\":{\"ts\":1564740692,\"value\":0},\"alarm.event\":{\"ts\":1564740692,\"value\":false},\"alarm.mode.status\":{\"ts\":1564740692,\"value\":false},\"battery.voltage\":{\"ts\":1564740692,\"value\":3.512},\"brake.acceleration\":{\"ts\":1564740692,\"value\":0},\"bump.acceleration\":{\"ts\":1564740692,\"value\":0.22},\"device.temperature\":{\"ts\":1564740692,\"value\":38},\"engine.ignition.status\":{\"ts\":1564740692,\"value\":true},\"external.powersource.voltage\":{\"ts\":1564740692,\"value\":0},\"external.powersource.voltage.range.outside.status\":{\"ts\":1564740692,\"value\":true},\"geofence.status\":{\"ts\":1564740692,\"value\":false},\"gnss.antenna.status\":{\"ts\":1564740692,\"value\":true},\"gnss.type\":{\"ts\":1564740692,\"value\":\"glonass\"},\"gsm.signal.level\":{\"ts\":1564740692,\"value\":33},\"gsm.sim.status\":{\"ts\":1564740692,\"value\":false},\"hardware.version.enum\":{\"ts\":1564730883.623066,\"value\":17},\"ibutton.connected.status\":{\"ts\":1564740692,\"value\":false},\"ident\":{\"ts\":1564740692,\"value\":\"865905020671073\"},\"incline.event\":{\"ts\":1564740692,\"value\":false},\"internal.battery.voltage.limit.lower.status\":{\"ts\":1564740692,\"value\":true},\"internal.bus.supply.voltage.range.outside.status\":{\"ts\":1564740692,\"value\":true},\"movement.status\":{\"ts\":1564740692,\"value\":true},\"peer\":{\"ts\":1564740692,\"value\":\"85.140.0.165:43418\"},\"position\":{\"ts\":1564740692,\"value\":{\"altitude\":32,\"direction\":296.6,\"hdop\":0.6000000000000001,\"latitude\":51.446176,\"longitude\":46.107536,\"satellites\":15,\"speed\":0,\"valid\":true}},\"position.altitude\":{\"ts\":1564740692,\"value\":32},\"position.direction\":{\"ts\":1564740692,\"value\":296.6},\"position.hdop\":{\"ts\":1564740692,\"value\":0.6000000000000001},\"position.latitude\":{\"ts\":1564740692,\"value\":51.446176},\"position.longitude\":{\"ts\":1564740692,\"value\":46.107536},\"position.satellites\":{\"ts\":1564740692,\"value\":15},\"position.speed\":{\"ts\":1564740692,\"value\":0},\"position.valid\":{\"ts\":1564740692,\"value\":true},\"record.seqnum\":{\"ts\":1564740692,\"value\":3754},\"rs232.sensor.value.0\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.0\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.1\":{\"ts\":1564740692,\"value\":0},\"rs485.fuel.sensor.level.2\":{\"ts\":1564740692,\"value\":0},\"server.timestamp\":{\"ts\":1564740692,\"value\":1564740694.42362},\"shock.event\":{\"ts\":1564740692,\"value\":false},\"software.version.enum\":{\"ts\":1564730883.623066,\"value\":231},\"timestamp\":{\"ts\":1564740692,\"value\":1564740692},\"turn.acceleration\":{\"ts\":1564740692,\"value\":0},\"x.acceleration\":{\"ts\":1564740692,\"value\":-0.9301075268817204},\"y.acceleration\":{\"ts\":1564740692,\"value\":-0.1989247311827957},\"z.acceleration\":{\"ts\":1564740692,\"value\":0.3763440860215054}}}]}";
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            string json = ReadFile("json5i.txt");
+            string json = Utils.ReadFile("json5i.txt");
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             string fileName = "json5.txt";
 
             foreach (var a in dobj["result"])
             {
-                zu.Print(fileName, a["id"].ToString());
-                zu.Print(fileName, a["telemetry"]["absolute.acceleration"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["absolute.acceleration"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["ain.1"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["ain.1"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["ain.2"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["ain.2"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["alarm.event"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["alarm.event"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["alarm.mode.status"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["alarm.mode.status"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["battery.voltage"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["battery.voltage"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["brake.acceleration"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["brake.acceleration"]["value"].ToString());
+                Utils.Print(fileName, a["id"].ToString());
+                Utils.Print(fileName, a["telemetry"]["absolute.acceleration"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["absolute.acceleration"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["ain.1"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["ain.1"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["ain.2"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["ain.2"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["alarm.event"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["alarm.event"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["alarm.mode.status"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["alarm.mode.status"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["battery.voltage"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["battery.voltage"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["brake.acceleration"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["brake.acceleration"]["value"].ToString());
 
-                zu.Print(fileName, a["telemetry"]["bump.acceleration"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["bump.acceleration"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["bump.acceleration"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["bump.acceleration"]["value"].ToString());
 
-                zu.Print(fileName, a["telemetry"]["device.temperature"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["device.temperature"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["device.temperature"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["device.temperature"]["value"].ToString());
 
-                zu.Print(fileName, a["telemetry"]["engine.ignition.status"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["engine.ignition.status"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["engine.ignition.status"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["engine.ignition.status"]["value"].ToString());
 
-                zu.Print(fileName, a["telemetry"]["external.powersource.voltage"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["external.powersource.voltage"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["external.powersource.voltage"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["external.powersource.voltage"]["value"].ToString());
 
-                zu.Print(fileName, a["telemetry"]["external.powersource.voltage.range.outside.status"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["external.powersource.voltage.range.outside.status"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["geofence.status"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["geofence.status"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["external.powersource.voltage.range.outside.status"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["external.powersource.voltage.range.outside.status"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["geofence.status"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["geofence.status"]["value"].ToString());
 
-                zu.Print(fileName, a["telemetry"]["gnss.antenna.status"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["gnss.antenna.status"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["gnss.type"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["gnss.type"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["gsm.signal.level"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["gsm.signal.level"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["gsm.sim.status"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["gsm.sim.status"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["hardware.version.enum"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["hardware.version.enum"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["ibutton.connected.status"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["ibutton.connected.status"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["gnss.antenna.status"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["gnss.antenna.status"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["gnss.type"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["gnss.type"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["gsm.signal.level"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["gsm.signal.level"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["gsm.sim.status"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["gsm.sim.status"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["hardware.version.enum"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["hardware.version.enum"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["ibutton.connected.status"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["ibutton.connected.status"]["value"].ToString());
 
-                zu.Print(fileName, a["telemetry"]["ident"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["ident"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["incline.event"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["incline.event"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["internal.battery.voltage.limit.lower.status"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["internal.battery.voltage.limit.lower.status"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["internal.bus.supply.voltage.range.outside.status"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["internal.bus.supply.voltage.range.outside.status"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["movement.status"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["movement.status"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["ident"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["ident"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["incline.event"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["incline.event"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["internal.battery.voltage.limit.lower.status"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["internal.battery.voltage.limit.lower.status"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["internal.bus.supply.voltage.range.outside.status"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["internal.bus.supply.voltage.range.outside.status"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["movement.status"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["movement.status"]["value"].ToString());
 
-                zu.Print(fileName, a["telemetry"]["peer"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["peer"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["position"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["position"]["value"]["altitude"].ToString());
-                zu.Print(fileName, a["telemetry"]["position"]["value"]["direction"].ToString());
-                zu.Print(fileName, a["telemetry"]["position"]["value"]["hdop"].ToString());
-                zu.Print(fileName, a["telemetry"]["position"]["value"]["latitude"].ToString());
-                zu.Print(fileName, a["telemetry"]["position"]["value"]["longitude"].ToString());
-                zu.Print(fileName, a["telemetry"]["position"]["value"]["satellites"].ToString());
-                zu.Print(fileName, a["telemetry"]["position"]["value"]["speed"].ToString());
-                zu.Print(fileName, a["telemetry"]["position"]["value"]["valid"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.altitude"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.altitude"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.direction"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.direction"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.hdop"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.hdop"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.latitude"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.latitude"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.longitude"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.longitude"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.satellites"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.satellites"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.speed"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.speed"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.valid"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["position.valid"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["record.seqnum"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["record.seqnum"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["rs232.sensor.value.0"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["rs232.sensor.value.0"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.0"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.0"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.1"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.1"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.2"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.2"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["server.timestamp"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["server.timestamp"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["shock.event"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["shock.event"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["software.version.enum"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["software.version.enum"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["timestamp"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["timestamp"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["turn.acceleration"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["turn.acceleration"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["x.acceleration"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["x.acceleration"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["y.acceleration"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["y.acceleration"]["value"].ToString());
-                zu.Print(fileName, a["telemetry"]["z.acceleration"]["ts"].ToString());
-                zu.Print(fileName, a["telemetry"]["z.acceleration"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["peer"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["peer"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position"]["value"]["altitude"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position"]["value"]["direction"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position"]["value"]["hdop"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position"]["value"]["latitude"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position"]["value"]["longitude"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position"]["value"]["satellites"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position"]["value"]["speed"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position"]["value"]["valid"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.altitude"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.altitude"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.direction"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.direction"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.hdop"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.hdop"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.latitude"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.latitude"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.longitude"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.longitude"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.satellites"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.satellites"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.speed"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.speed"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.valid"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["position.valid"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["record.seqnum"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["record.seqnum"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["rs232.sensor.value.0"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["rs232.sensor.value.0"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.0"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.0"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.1"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.1"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.2"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["rs485.fuel.sensor.level.2"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["server.timestamp"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["server.timestamp"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["shock.event"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["shock.event"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["software.version.enum"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["software.version.enum"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["timestamp"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["timestamp"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["turn.acceleration"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["turn.acceleration"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["x.acceleration"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["x.acceleration"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["y.acceleration"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["y.acceleration"]["value"].ToString());
+                Utils.Print(fileName, a["telemetry"]["z.acceleration"]["ts"].ToString());
+                Utils.Print(fileName, a["telemetry"]["z.acceleration"]["value"].ToString());
             }
         }
         /**/
@@ -667,8 +607,8 @@ namespace flespi_simle
                 Stream stream = webClient.OpenRead(URI);
                 StreamReader reader = new StreamReader(stream);
                 request = reader.ReadToEnd();
-                zu.Print(log, new string('-', 80));
-                zu.Print(log, request);
+                Utils.Print(log, new string('-', 80));
+                Utils.Print(log, request);
                 /*StreamWriter streamWriter = new StreamWriter("snapshot.gz");
                 streamWriter.Write(request);
                 streamWriter.Close();*/
@@ -683,11 +623,11 @@ namespace flespi_simle
                     {
                         case HttpStatusCode.NotFound:
                             //response = null;
-                            zu.Print(log, "Что-то пошло не так!");
+                            Utils.Print(log, "Что-то пошло не так!");
                             break;
 
                         default:
-                            zu.Print(log, "Что-то однозначно пошло не так! " + ex.Message);
+                            Utils.Print(log, "Что-то однозначно пошло не так! " + ex.Message);
                             //throw ex;
                             break;
                     }
@@ -721,16 +661,16 @@ namespace flespi_simle
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    zu.Print(log, streamReader.ReadToEnd());
+                    Utils.Print(log, streamReader.ReadToEnd());
                 }
             }
             catch(WebException ex)
             {
-                zu.Print(log, ex.Message);
+                Utils.Print(log, ex.Message);
                 //Console.WriteLine(ex.Response.Headers.ToString());
                 using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
                 {
-                    zu.Print(log, streamReader.ReadToEnd());
+                    Utils.Print(log, streamReader.ReadToEnd());
                 }
             }
         }
@@ -762,16 +702,16 @@ catch
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    zu.Print(log, streamReader.ReadToEnd());
+                    Utils.Print(log, streamReader.ReadToEnd());
                 }
             }
             catch (WebException ex)
             {
-                zu.Print(log, ex.Message);
+                Utils.Print(log, ex.Message);
                 //Console.WriteLine(ex.Response.Headers.ToString());
                 using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
                 {
-                    zu.Print(log, streamReader.ReadToEnd());
+                    Utils.Print(log, streamReader.ReadToEnd());
                 }
             }
         }
@@ -790,71 +730,28 @@ catch
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    zu.Print(log, streamReader.ReadToEnd());
+                    Utils.Print(log, streamReader.ReadToEnd());
                 }
             }
             catch (WebException ex)
             {
-                zu.Print(log, ex.Message);
+                Utils.Print(log, ex.Message);
                 //Console.WriteLine(ex.Response.Headers.ToString());
                 using (var streamReader = new StreamReader(ex.Response.GetResponseStream()))
                 {
-                    zu.Print(log, streamReader.ReadToEnd());
+                    Utils.Print(log, streamReader.ReadToEnd());
                 }
             }
-        }
-        //static void zu.Print(string filename, string line, bool console = true)
-        //{
-        //    if (console)
-        //        Console.WriteLine(line);
-        //    StreamWriter writer;
-        //    if (File.Exists(filename))
-        //        writer = new StreamWriter(filename, true);
-        //    else
-        //        writer = new StreamWriter(filename);
-        //    writer.WriteLine(line);
-        //    writer.Close();
-        //}
-        static string ReadFile(string fileName)
-        {
-            string ret;
-            StreamReader reader = new StreamReader(fileName);
-            ret = reader.ReadToEnd();
-            reader.Close();
-            return ret;
-        }
-        static void ClientReceiveTest11()
-        {
-            MqttClient client = new MqttClient("test.mosquitto.org");
-            byte code = client.Connect(Guid.NewGuid().ToString()/*, token, ""*/);
-
-            Console.WriteLine("Protocol " + client.ProtocolVersion);
-
-            Console.WriteLine("Connected " + client.IsConnected);
-            Console.WriteLine(client.Settings.Port + " " + client.Settings.SslPort);
-
-            client.MqttMsgPublished += client_MqttMsgPublished;
-            client.MqttMsgSubscribed += client_MqttMsgSubscribed;
-            client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
-            client.MqttMsgUnsubscribed += client_MqttMsgUnsubscribed;
-
-            ushort msgId = client.Publish("/my_topic", // topic
-                           Encoding.UTF8.GetBytes("MyMessageBody"), // message body
-                           MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, // QoS level
-                           false); // retained
-            ushort msgId2 = client.Subscribe(new string[] { "/topic_1", "/topic_2" },
-                            new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE,
-                            MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
-            //client.Disconnect();
         }
 
         static void client_MqttMsgPublished(object sender, MqttMsgPublishedEventArgs e)
         {
             Console.WriteLine("MessageId = " + e.MessageId + " Published = " + e.IsPublished);
         }
+
         static void client_MqttMsgSubscribed(object sender, MqttMsgSubscribedEventArgs e)
         {
-            zu.Print("received.txt", "Subscribed for id = " + e.MessageId);
+            Utils.Print("received.txt", "Subscribed for id = " + e.MessageId);
         }
         static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
@@ -867,10 +764,7 @@ catch
         {
             Console.WriteLine("Unsubscribed for id = " + e.MessageId);
         }
-        static void Parse2(string topic, string message)
-        {
 
-        }
         static void Parse(string topic, string message)
         {
             string [] headers = topic.Split('/');
@@ -923,9 +817,21 @@ catch
             string e_dbFields = "";
             string dbValues = "";
             string value = message;
-            string sql = "";
+            string sql_insert = "";
+            string sql_update = "";
 
             string tableName = "Settings";
+            int recid = 0;
+
+            SqlConnection sqlConnection = new SqlConnection(conStr);
+            sqlConnection.Open();
+            SqlCommand sqlCommand = new SqlCommand("Select recid From " + tableName + " Where [device_uid] = " + device_id, sqlConnection);
+            int rows = 0;
+
+            Object o = sqlCommand.ExecuteScalar();
+
+            if (o != null)
+                recid = Convert.ToInt32(o.ToString());
 
             foreach (var a in dobj["result"])
             {
@@ -939,62 +845,80 @@ catch
                     case "sin5":
                     case "sin6":
                     case "sin7":
-                        zu.Print("settings.txt", a["delay"].ToString());
-                        zu.Print("settings.txt", a["sms"].ToString());
-                        dbFields = "({0}delay, {0}msg, {0}photo, {0}ring, {0}sms, {0}type) Values ({1}, {2}, {3}, {4}, {5}, {6})";
-                        sql = string.Format("Insert Into {7} ({0}delay, {0}msg, {0}photo, {0}ring, {0}sms, {0}type) Values ({1}, {2}, {3}, {4}, {5}, {6})"
-                            , field+"_", a["delay"].ToString(), a["msg"].ToString(), a["photo"].ToString(), a["ring"].ToString(), a["sms"].ToString(), a["type"].ToString(), tableName);
-                        sql = "Insert Into Settings () Values ()";
+                        sql_insert = string.Format("Insert Into {7} ({0}delay, {0}msg, {0}photo, {0}ring, {0}sms, {0}type, Device_UID) Values ({1}, {2}, {3}, {4}, {5}, {6}, {8})"
+                            , field+"_", a["delay"].ToString(), "'"+a["msg"].ToString()+"'", a["photo"].ToString() == "true"? "1" : "0", a["ring"].ToString() == "true"?"1":"0", a["sms"].ToString() == "true"?"1":"0", a["type"].ToString(), tableName, device_id);
+                        sql_update = string.Format("Update Settings Set {0}delay={1}, {0}msg={2}, {0}photo={3}, {0}ring={4}, {0}sms={5}, {0}type={6} Where recid={7}"
+                            , field + "_", a["delay"].ToString(), "'" + a["msg"].ToString() + "'", a["photo"].ToString() == "true" ? "1" : "0", a["ring"].ToString() == "true" ? "1" : "0", a["sms"].ToString() == "true" ? "1" : "0", a["type"].ToString(), recid);
                         break;
                     case "sout0":
                     case "sout1":
                     case "sout2":
                     case "sout3":
-                        zu.Print("settings.txt", a["amode"]["count"].ToString());
-                        zu.Print("settings.txt", a["amode"]["dur"].ToString());
-                        a_dbFields = "{0}count, {0}delay, {0}dur, {0}type";
-                        d_dbFields = "{0}count, {0}dur, {0}type";
-                        e_dbFields = "{0}count, {0}dur, {0}type";
+                        sql_insert = string.Format(@"Insert Into Settings ({0}amode_count, {0}amode_delay, {0}amode_dur, {0}amode_type,
+                         {0}dmode_count, {0}dmode_dur, {0}dmode_type,
+                         {0}emode_count, {0}emode_dur, {0}emode_type, device_uid) Values ("+
+                         a["amode"]["count"].ToString()+"," +a["amode"]["delay"].ToString() + "," + a["amode"]["dur"].ToString() + "," + a["amode"]["type"].ToString() + "," +
+                         a["dmode"]["count"].ToString() + "," + a["dmode"]["dur"].ToString() + "," + a["dmode"]["type"].ToString() + "," +
+                         a["emode"]["count"].ToString() + "," + a["emode"]["dur"].ToString() + "," + a["emode"]["type"].ToString()+", {1})", field + "_", device_id);
+                        sql_update = string.Format(@"Update Settings Set {0}amode_count={1}, {0}amode_delay={2}, {0}amode_dur={3}, {0}amode_type={4},
+                         {0}dmode_count={5}, {0}dmode_dur={6}, {0}dmode_type={7}, {0}emode_count={8}, {0}emode_dur={9}, {0}emode_type={10} Where recid={11}", field + "_",
+                         a["amode"]["count"].ToString(), a["amode"]["delay"].ToString(), a["amode"]["dur"].ToString(), a["amode"]["type"].ToString(),
+                         a["dmode"]["count"].ToString(), a["dmode"]["dur"].ToString(), a["dmode"]["type"].ToString(),
+                         a["emode"]["count"].ToString(), a["emode"]["dur"].ToString(), a["emode"]["type"].ToString(), recid);
                         break;
-                    case "cambus":
-                        dbFields = "{0}mode_baundrate, {0}do_not_clean_after_timeout, {0}timeout, {0}type";
+                    case "canbus":// хуйня какая-то
+                        sql_insert = string.Format("Insert Into Settings ({0}mode_baundrate, {0}mode_do_not_clean_after_timeout, {0}mode_timeout, {0}mode_type, Device_uid) Values (" +
+                            a["mode"]["baundrate"].ToString() + "," + a["mode"]["do_not_clean_after_timeout"].ToString() == "true" ? "1":"0" + "," + a["mode"]["timeout"].ToString() + "," + a["mode"]["type"].ToString() + ", {1}",
+                            field+"_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}mode_baundrate={1}, {0}mode_do_not_clean_after_timeout={2}, {0}mode_timeout={3}, {0}mode_type={4} Where recid={5}", field+"_", a["mode"]["baundrate"].ToString(), a["mode"]["do_not_clean_after_timeout"].ToString() == "true" ? "1" : "0", a["mode"]["timeout"].ToString(), a["mode"]["type"].ToString(), recid);
                         break;
                     case "phones":
-                        dbFields = "{0}number1,{0}number2,{0}number3,{0}number4";
+                        sql_insert = string.Format("Insert Into Settings ({0}number1, {0}number2, {0}number3, {0}number4, device_uid) Values ('"+a["number1"].ToString()+"','" + a["number2"].ToString() + "','" + a["number3"].ToString() + "','" + a["number4"].ToString() + "', {1})", field+"_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}number1='{1}', {0}number2='{2}', {0}number3='{3}', {0}number4='{4}' Where recid={5}", field+"_", a["number1"].ToString(), a["number2"].ToString(), a["number3"].ToString(), a["number4"].ToString(), recid);
                         break;
                     case "wr_period":
-                        dbFields = "{0}move_int, {0}stop_int";
+                        sql_insert = string.Format("Insert Into Settings ({0}move_int, {0}stop_int, device_uid) Values ("+a["move_int"].ToString()+","+a["stop_int"].ToString() +", {1})", field+"_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}move_int={1}, {0}stop_int={2} Where recid={3}", field+"_", a["move_int"].ToString(), a["stop_int"].ToString(), recid);
                         break;
                     case "network_sim0":
                     case "network_sim1":
-                        dbFields = "{0}apn, {0}password, {0}username";
+                        sql_insert = string.Format("Insert Into Settings ({0}apn, {0}password, {0}username, device_uid) Values ('" + a["apn"].ToString() + "','" + a["password"].ToString() + "','" + a["username"].ToString() + "', {1})", field + "_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}apn='{1}', {0}password='{2}', {0}username='{3}' Where recid={4}", field + "_", a["apn"].ToString(), a["password"].ToString(), a["username"].ToString(), recid);
                         break;
                     case "sign":
-                        dbFields = "{0}datimeout, {0}gwtime, {0}useib";
+                        sql_insert = string.Format("Insert Into Settings ({0}datimeout, {0}gwtime, {0}useib, device_uid) Values (" + a["datimeout"].ToString() + "," + a["gwtime"].ToString() + "," + a["useib"].ToString() + ", {1})", field + "_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}datimeout={1}, {0}gwtime={2}, {0}useib={3} Where recid={4}", field + "_", a["datimeout"].ToString(), a["gwtime"].ToString(), a["useib"].ToString(), recid);
                         break;
                     case "output0":
                     case "output1":
                     case "output2":
                     case "output3":
-                        dbFields = "{0}out_val";
+                        sql_insert = string.Format("Insert Into Settings ({0}out_val, device_uid) Values (" + a["out_val"].ToString() == "true" ? "1":"0" + ", {1})", field + "_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}out_val={1} Where recid={2}", field + "_", a["out_val"].ToString() == "true" ? "1": "0", recid);
                         break;
                     case "backend_server2":
-                        dbFields = "{0}host, {0}port";
+                        sql_insert = string.Format("Insert Into Settings ({0}host, {0}port, device_uid) Values ('" + a["host"].ToString()+"', "+a["port"].ToString() + ", {1})", field + "_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}host='{1}', {0}port={2} Where recid={3}", field + "_", a["host"].ToString(), a["port"].ToString(), recid);
                         break;
                     case "tracking":
-                        dbFields = "{0}angle, {0}angle_speed, {0}delta_speed, {0}dist, {0}speed";
+                        sql_insert = string.Format("Insert Into Settings ({0}angle, {0}angle_speed, {0}delta_speed, {0}dist, {0}speed, device_uid) Values (" + a["angle"].ToString() + ", " + a["angle_speed"].ToString() + ", " + a["delta_speed"].ToString() + ", " + a["dist"].ToString() + ", " + a["speed"].ToString() + ", {1})", field + "_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}angle={1}, {0}angle_speed={2}, {0}delta_speed={3}, {0}dist={4}, {0}speed={5} Where recid={6}", field + "_", a["angle"].ToString(), a["angle_speed"].ToString(), a["delta_speed"].ToString(), a["dist"].ToString(), a["speed"].ToString(), recid);
                         break;
                     case "sgps":
                         dbFields = "{0}radius, {0}ring, {0}sms, {0}speed, {0}timeout, {0}type";
+                        sql_insert = string.Format("Insert Into Settings ({0}radius, {0}ring, {0}sms, {0}speed, {0}timeout, {0}type, device_uid) Values (" + a["radius"].ToString() + ", " + a["ring"].ToString()=="true"?"1":"0" + ", " + a["sms"].ToString()=="true"?"1":"0" + ", " + a["speed"].ToString() + ", " + a["timeout"].ToString() + ", " + a["type"].ToString() + ", {1})", field + "_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}radius={1}, {0}ring={2}, {0}sms={3}, {0}speed={5}, {0}timeout={6}, {0}type={7} Where recid={7}", field + "_", a["radius"].ToString(), a["ring"].ToString()=="true"?"1":"0", a["sms"].ToString()=="true"?"1":"0", a["speed"].ToString(), a["timeout"].ToString(), a["type"].ToString(), recid);
                         break;
                     case "guard":
-                        dbFields = "{0}enable";
+                        sql_insert = string.Format("Insert Into Settings ({0}enable, device_uid) Values (" + a["enable"].ToString() == "true" ? "1" : "0" + ", {1})", field + "_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}enable={1} Where recid={2}", field + "_", a["enable"].ToString() == "true" ? "1" : "0", recid);
                         break;
                     case "shock":
                         dbFields = "{0}angle, {0}sens, {0}timeout, {0}type";
                         break;
                     case "easylogic_get":
-                        dbFields = "{0}scripts";
+                        sql_insert = string.Format("Insert Into Settings ({0}scripts, device_uid) Values ('" + a["scripts"].ToString() + "', {1})", field + "_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}scripts='{1}' Where recid={2}", field + "_", a["scripts"].ToString(), recid);
                         break;
                     case "sacc":
                         dbFields = "{0}msg, {0}photo, {0}ring, {0}sms, {0}type";
@@ -1005,31 +929,27 @@ catch
                     case "mainpack1":
                         dbFields = ",{0}tag_01,{0}tag_02,{0}tag_03,{0}tag_04,{0}tag_05,{0}tag_06,{0}tag_07,{0}tag_08,{0}tag_09,{0}tag_10,{0}tag_11,{0}tag_12,{0}tag_13,{0}tag_14,{0}tag_15";
                         break;
-                    default: /*DEvice_UID*/break;
+                    default: /*Device_UID*/break;
                 }
                 //zu.Print(fileName, a["telemetry"]["absolute.acceleration"]["ts"].ToString());
 
-                zu.Print("settings.txt", "topic: " + topic + " message " + message);
-                zu.Print("settings.txt", "------------------------------------------------------");
+                Utils.Print("settings.txt", "topic: " + topic + " message " + message);
+                Utils.Print("settings.txt", "------------------------------------------------------");
             }
-            SqlConnection sqlConnection = new SqlConnection(conStr);
-            sqlConnection.Open();
-            SqlCommand sqlCommand = new SqlCommand("Select recid From "+tableName + " Where [device.id] = " + device_id, sqlConnection);
-            int rows = 0;
-
-            Object o = sqlCommand.ExecuteScalar();
+            
             /*sqlCommand.CommandText = "SELECT t.name FROM sys.columns AS c JOIN sys.types AS t ON c.user_type_id = t.user_type_id WHERE c.object_id = OBJECT_ID('Settings') and c.name = '" + field + "'";
             Object t = sqlCommand.ExecuteScalar();*/
-            string s = "";
-            if (/*t.ToString()*/getType(tableName, field) == "nvarchar")
-            {
-                s = "'";
-            }
-            if (value == "true")
-                value = "1";
-            if (value == "false")
-                value = "0";
+            //string s = "";
+            //if (/*t.ToString()*/getType(tableName, /*field*/"sin0_msg") == "nvarchar")
+            //{
+            //    s = "'";
+            //}
+            //if (value == "true")
+            //    value = "1";
+            //if (value == "false")
+            //    value = "0";
 
+            // Получить тип поля его названию и названию таблицы
             string getType(string tableNameI, string fieldName)
             {
                 sqlCommand.CommandText = "SELECT t.name FROM sys.columns AS c JOIN sys.types AS t ON c.user_type_id = t.user_type_id WHERE c.object_id = OBJECT_ID('"+tableNameI+"') and c.name = '" + fieldName + "'";
@@ -1037,18 +957,22 @@ catch
                 return t.ToString();
             }
 
-            if (o == null)
+            if (recid == 0)
             {
-                sqlCommand.CommandText = "Insert Into "+tableName+" ([device.id], [" + field + "]) Values (" + device_id + ", " + s + value + s + ")";
+                sqlCommand.CommandText = sql_insert;
             }
             else
             {
-                sqlCommand.CommandText = "Update " + tableName + " Set [" + field + "] = " + s + value + s + " Where [device.id] = " + device_id;
+                sqlCommand.CommandText = sql_update;
             }
 
             rows = sqlCommand.ExecuteNonQuery();
 
             sqlConnection.Close();
+
+            //Console.CancelKeyPress
+
+            //client.Unsubscribe(new string[] { "flespi/state/gw/devices/361202/settings/guard" });
         }
         static void ClientReceiveTest1()
         {
@@ -1058,6 +982,7 @@ catch
             // register a callback-function (we have to implement, see below) which is called by the library when a message was received
             client.MqttMsgSubscribed += client_MqttMsgSubscribed;
             client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+            client.MqttMsgUnsubscribed += client_MqttMsgUnsubscribed;
 
             // use a unique id as client id, each time we start the application
             clientId = Guid.NewGuid().ToString();
@@ -1070,7 +995,10 @@ catch
             //ushort code = client.Subscribe(new string[] { "flespi/message/gw/devices/361202" }, new byte[] { 2 });
 
             //ushort code2 = client.Subscribe(new string[] { "flespi/state/gw/devices/361201" }, new byte[] { 2 });
-            ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/settings/sin0" }, new byte[] { 2 });
+            //ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/settings/canbus" }, new byte[] { 2 });
+            ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/settings/sgps" }, new byte[] { 2 });
+
+            //ushort code3 = client.Subscribe(new string[] { "flespi/state/gw/devices/361201/settings/network_sim1" }, new byte[] { 2 });
 
             //ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/telemetry/+" }, new byte[] { 2 });
         }

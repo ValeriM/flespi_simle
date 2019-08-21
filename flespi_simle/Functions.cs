@@ -3,7 +3,7 @@ using System.Web.Script.Serialization;
 using System.IO;
 namespace flespi_simle
 {
-    public static class zu
+    public static class Utils
     {
         static void test()
         {
@@ -31,6 +31,18 @@ namespace flespi_simle
                 writer = new StreamWriter(filename);
             writer.WriteLine(line);
             writer.Close();
+        }
+        public static string ReadFile(string fileName)
+        {
+            string ret;
+            StreamReader reader = new StreamReader(fileName);
+            ret = reader.ReadToEnd();
+            reader.Close();
+            return ret;
+        }
+        static void Parse2(string topic, string message)
+        {
+
         }
     }
 }

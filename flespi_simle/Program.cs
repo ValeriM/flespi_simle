@@ -841,9 +841,9 @@ catch
                     case "sin6":
                     case "sin7":
                         sql_insert = string.Format("Insert Into {7} ({0}delay, {0}msg, {0}photo, {0}ring, {0}sms, {0}type, Device_UID) Values ({1}, {2}, {3}, {4}, {5}, {6}, {8})"
-                            , field+"_", a["delay"].ToString(), "'"+a["msg"].ToString()+"'", a["photo"].ToString() == "True"? "1" : "0", a["ring"].ToString() == "True"?"1":"0", a["sms"].ToString() == "True"?"1":"0", a["type"].ToString(), tableName, device_id);
+                            , field+"_", a["delay"].ToString(), "'"+a["msg"].ToString()+"'", BO10(a["photo"]), BO10(a["ring"]), BO10(a["sms"]), a["type"].ToString(), tableName, device_id);
                         sql_update = string.Format("Update Settings Set {0}delay={1}, {0}msg={2}, {0}photo={3}, {0}ring={4}, {0}sms={5}, {0}type={6} Where recid={7}"
-                            , field + "_", a["delay"].ToString(), "'" + a["msg"].ToString() + "'", a["photo"].ToString() == "True" ? "1" : "0", a["ring"].ToString() == "True" ? "1" : "0", a["sms"].ToString() == "True" ? "1" : "0", a["type"].ToString(), recid);
+                            , field + "_", a["delay"].ToString(), "'" + a["msg"].ToString() + "'", BO10(a["photo"]), BO10(a["ring"]), BO10(a["sms"]), a["type"].ToString(), recid);
                         break;
                     case "sout0":
                     case "sout1":
@@ -867,9 +867,9 @@ catch
                         string d = a["mode"]["do_not_clean_after_timeout"].ToString();
                         string e = a["mode"]["baudrate"].ToString();*/
                         sql_insert = string.Format("Insert Into Settings ({0}mode_baudrate, {0}mode_do_not_clean_after_timeout, {0}mode_timeout, {0}mode_type, Device_uid) Values (" +
-                            a["mode"]["baudrate"].ToString() + "," + a["mode"]["do_not_clean_after_timeout"].ToString() == "True" ? "1":"0" + "," + a["mode"]["timeout"].ToString() + "," + a["mode"]["type"].ToString() + ", {1}",
+                            a["mode"]["baudrate"].ToString() + "," + BO10(a["mode"]["do_not_clean_after_timeout"]) + "," + a["mode"]["timeout"].ToString() + "," + a["mode"]["type"].ToString() + ", {1}",
                             field+"_", device_id);
-                        sql_update = string.Format("Update Settings Set {0}mode_baudrate={1}, {0}mode_do_not_clean_after_timeout={2}, {0}mode_timeout={3}, {0}mode_type={4} Where recid={5}", field+"_", a["mode"]["baudrate"].ToString(), a["mode"]["do_not_clean_after_timeout"].ToString() == "True" ? "1" : "0", a["mode"]["timeout"].ToString(), a["mode"]["type"].ToString(), recid);
+                        sql_update = string.Format("Update Settings Set {0}mode_baudrate={1}, {0}mode_do_not_clean_after_timeout={2}, {0}mode_timeout={3}, {0}mode_type={4} Where recid={5}", field+"_", a["mode"]["baudrate"].ToString(), BO10(a["mode"]["do_not_clean_after_timeout"]), a["mode"]["timeout"].ToString(), a["mode"]["type"].ToString(), recid);
                         break;
                     case "phones":
                         sql_insert = string.Format("Insert Into Settings ({0}number1, {0}number2, {0}number3, {0}number4, device_uid) Values ('"+a["number1"].ToString()+"','" + a["number2"].ToString() + "','" + a["number3"].ToString() + "','" + a["number4"].ToString() + "', {1})", field+"_", device_id);
@@ -892,8 +892,8 @@ catch
                     case "output1":
                     case "output2":
                     case "output3":
-                        sql_insert = string.Format("Insert Into Settings ({0}out_val, device_uid) Values (" + a["out_val"].ToString() == "True" ? "1":"0" + ", {1})", field + "_", device_id);
-                        sql_update = string.Format("Update Settings Set {0}out_val={1} Where recid={2}", field + "_", a["out_val"].ToString() == "True" ? "1": "0", recid);
+                        sql_insert = string.Format("Insert Into Settings ({0}out_val, device_uid) Values (" + BO10(a["out_val"]) + ", {1})", field + "_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}out_val={1} Where recid={2}", field + "_", BO10(a["out_val"]), recid);
                         break;
                     case "backend_server2":
                         sql_insert = string.Format("Insert Into Settings ({0}host, {0}port, device_uid) Values ('" + a["host"].ToString()+"', "+a["port"].ToString() + ", {1})", field + "_", device_id);
@@ -904,12 +904,12 @@ catch
                         sql_update = string.Format("Update Settings Set {0}angle={1}, {0}angle_speed={2}, {0}delta_speed={3}, {0}dist={4}, {0}speed={5} Where recid={6}", field + "_", a["angle"].ToString(), a["angle_speed"].ToString(), a["delta_speed"].ToString(), a["dist"].ToString(), a["speed"].ToString(), recid);
                         break;
                     case "sgps":
-                        sql_insert = string.Format("Insert Into Settings ({0}radius, {0}ring, {0}sms, {0}speed, {0}timeout, {0}type, device_uid) Values (" + a["radius"].ToString() + ", " + a["ring"].ToString()=="True"?"1":"0" + ", " + a["sms"].ToString()=="True"?"1":"0" + ", " + a["speed"].ToString() + ", " + a["timeout"].ToString() + ", " + a["type"].ToString() + ", {1})", field + "_", device_id);
-                        sql_update = string.Format("Update Settings Set {0}radius={1}, {0}ring={2}, {0}sms={3}, {0}speed={5}, {0}timeout={6}, {0}type={7} Where recid={7}", field + "_", a["radius"].ToString(), a["ring"].ToString()=="True"?"1":"0", a["sms"].ToString()=="True"?"1":"0", a["speed"].ToString(), a["timeout"].ToString(), a["type"].ToString(), recid);
+                        sql_insert = string.Format("Insert Into Settings ({0}radius, {0}ring, {0}sms, {0}speed, {0}timeout, {0}type, device_uid) Values (" + a["radius"].ToString() + ", " + BO10(a["ring"]) + ", " + BO10(a["sms"]) + ", " + a["speed"].ToString() + ", " + a["timeout"].ToString() + ", " + a["type"].ToString() + ", {1})", field + "_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}radius={1}, {0}ring={2}, {0}sms={3}, {0}speed={5}, {0}timeout={6}, {0}type={7} Where recid={7}", field + "_", a["radius"].ToString(), BO10(a["ring"]), BO10(a["sms"]), a["speed"].ToString(), a["timeout"].ToString(), a["type"].ToString(), recid);
                         break;
                     case "guard":
-                        sql_insert = string.Format("Insert Into Settings ({0}enable, device_uid) Values (" + a["enable"].ToString() == "True" ? "1" : "0" + ", {1})", field + "_", device_id);
-                        sql_update = string.Format("Update Settings Set {0}enable={1} Where recid={2}", field + "_", a["enable"].ToString() == "True" ? "1" : "0", recid);
+                        sql_insert = string.Format("Insert Into Settings ({0}enable, device_uid) Values (" + BO10(a["enable"]) + ", {1})", field + "_", device_id);
+                        sql_update = string.Format("Update Settings Set {0}enable={1} Where recid={2}", field + "_", BO10(a["enable"]), recid);
                         break;
                     case "shock":
                         sql_insert = string.Format("Insert Into Settings ({0}angle, {0}sens, {0}timeout, {0}type, device_uid) Values (" + 
@@ -923,32 +923,34 @@ catch
                         break;
                     case "sacc":
                         sql_insert = string.Format("Insert Into Settings ({0}msg, {0}photo, {0}ring, {0}sms, {0}type, device_uid) Values ('" +
-                            a["msg"].ToString() + "', " + a["photo"].ToString()=="True"?"1":"0" + ", " + a["ring"].ToString()=="True"?"1":"0" + ", " + a["sms"].ToString()=="True"?"1":"0" + ", " + a["type"].ToString() + ", {1})", field + "_", device_id);
+                            a["msg"].ToString() + "', " + BO10(a["photo"]) + ", " + BO10(a["ring"]) + ", " + BO10(a["sms"]) + ", " + a["type"].ToString() + ", {1})", field + "_", device_id);
                         sql_update = string.Format("Update Settings Set {0}msg='{1}', {0}photo={2}, {0}ring={3}, {0}sms={4}, {0}type={5} Where recid={6}",
-                            field + "_", a["msg"].ToString(), a["photo"].ToString()=="True"?"1":"0", a["ring"].ToString()=="True"?"1":"0", a["sms"].ToString()=="True"?"1":"0", a["type"].ToString(), recid);
+                            field + "_", a["msg"].ToString(), BO10(a["photo"]), BO10(a["ring"]), BO10(a["sms"]), a["type"].ToString(), recid);
                         break;
                     case "headpack1":
                         sql_insert = string.Format("Insert Into Settings ({0}tag_01, {0}tag_02, {0}tag_03, device_uid) Values (" +
-                            a["tag_01"].ToString() == "True" ? "1" : "0" + ", " + a["tag_02"].ToString() == "True" ? "1" : "0" + ", " + a["tag_03"].ToString() == "True" ? "1" : "0" + ", {1})", field + "_", device_id);
+                            BO10(a["tag_01"]) + ", " + BO10(a["tag_02"]) + ", " + BO10(a["tag_03"]) + ", {1})", field + "_", device_id);
+                        sql_insert = string.Format("Insert Into Settings ({0}tag_01, {0}tag_02, {0}tag_03, device_uid) Values (" +
+                            BO10(a["tag_01"]) + ", " + BO10(a["tag_02"]) + ", " + BO10(a["tag_03"]) + ", {1})", field + "_", device_id);
                         sql_update = string.Format("Update Settings Set {0}tag_01={1}, {0}tag_02={2}, {0}tag_03={3} Where recid={4}",
-                            field + "_", a["tag_01"].ToString() == "True" ? "1" : "0", a["tag_02"].ToString() == "True" ? "1" : "0", a["tag_03"].ToString() == "True" ? "1" : "0", recid);
+                            field + "_", BO10(a["tag_01"]), BO10(a["tag_02"]), BO10(a["tag_03"]), recid);
                         break;
                     case "mainpack1":
                         //dbFields = ",{0}tag_01,{0}tag_02,{0}tag_03,{0}tag_04,{0}tag_05,{0}tag_06,{0}tag_07,{0}tag_08,{0}tag_09,{0}tag_10,{0}tag_11,{0}tag_12,{0}tag_13,{0}tag_14,{0}tag_15";
-                        sql_insert = string.Format("Insert Into Settings ({0}tag_01, {0}tag_02, {0}tag_03,{0}tag_04,{0}tag_05,{0}tag_06,{0}tag_07,{0}tag_08,{0}tag_09,{0}tag_10,{0}tag_11,{0}tag_12,{0}tag_13,{0}tag_14,{0}tag_15, device_uid) Values (" + 
-                            a["tag_01"].ToString()=="True"?"1":"0"+","+a["tag_02"].ToString() == "True" ? "1" : "0"+ "," + a["tag_03"].ToString() == "True" ? "1" : "0" +
-                            a["tag_04"].ToString() == "True" ? "1" : "0" + "," + a["tag_05"].ToString() == "True" ? "1" : "0" + "," + a["tag_06"].ToString() == "True" ? "1" : "0" +
-                            a["tag_07"].ToString() == "True" ? "1" : "0" + "," + a["tag_08"].ToString() == "True" ? "1" : "0" + "," + a["tag_09"].ToString() == "True" ? "1" : "0" +
-                            a["tag_10"].ToString() == "True" ? "1" : "0" + "," + a["tag_11"].ToString() == "True" ? "1" : "0" + "," + a["tag_12"].ToString() == "True" ? "1" : "0" +
-                            a["tag_13"].ToString() == "True" ? "1" : "0" + "," + a["tag_14"].ToString() == "True" ? "1" : "0" + "," + a["tag_15"].ToString() == "True" ? "1" : "0" +
+                        sql_insert = string.Format("Insert Into Settings ({0}tag_01, {0}tag_02, {0}tag_03,{0}tag_04,{0}tag_05,{0}tag_06,{0}tag_07,{0}tag_08,{0}tag_09,{0}tag_10,{0}tag_11,{0}tag_12,{0}tag_13,{0}tag_14,{0}tag_15, device_uid) Values (" +
+                            BO10(a["tag_01"])+","+ BO10(a["tag_02"])+ "," + BO10(a["tag_03"]) +
+                            BO10(a["tag_04"]) + "," + BO10(a["tag_05"]) + "," + BO10(a["tag_06"]) +
+                            BO10(a["tag_07"]) + "," + BO10(a["tag_08"]) + "," + BO10(a["tag_09"]) +
+                            BO10(a["tag_10"]) + "," + BO10(a["tag_11"]) + "," + BO10(a["tag_12"]) +
+                            BO10(a["tag_13"]) + "," + BO10(a["tag_14"]) + "," + BO10(a["tag_15"]) +
                             ", {1})", field+"_", device_id);
                         sql_update = string.Format("Update Settings Set {0}tag_01={1}, {0}tag_02={2}, {0}tag_03={3},{0}tag_04={4}, {0}tag_05={5}, {0}tag_06={6},{0}tag_07={7}, {0}tag_08={8}, {0}tag_09={9},{0}tag_10={10}, {0}tag_11={11}, {0}tag_12={12},{0}tag_13={13}, {0}tag_14={14}, {0}tag_15={15} Where recid={16}", 
-                            field+"_", 
-                            a["tag_01"].ToString()== "True"?"1":"0", a["tag_02"].ToString() == "True" ? "1" : "0", a["tag_03"].ToString() == "True" ? "1" : "0",
-                            a["tag_04"].ToString() == "True" ? "1" : "0", a["tag_05"].ToString() == "True" ? "1" : "0", a["tag_06"].ToString() == "True" ? "1" : "0",
-                            a["tag_07"].ToString() == "True" ? "1" : "0", a["tag_08"].ToString() == "True" ? "1" : "0", a["tag_09"].ToString() == "True" ? "1" : "0",
-                            a["tag_10"].ToString() == "True" ? "1" : "0", a["tag_11"].ToString() == "True" ? "1" : "0", a["tag_12"].ToString() == "True" ? "1" : "0",
-                            a["tag_13"].ToString() == "True" ? "1" : "0", a["tag_14"].ToString() == "True" ? "1" : "0", a["tag_15"].ToString() == "True" ? "1" : "0",
+                            field+"_",
+                            BO10(a["tag_01"]), BO10(a["tag_02"]), BO10(a["tag_03"]),
+                            BO10(a["tag_04"]), BO10(a["tag_05"]), BO10(a["tag_06"]),
+                            BO10(a["tag_07"]), BO10(a["tag_08"]), BO10(a["tag_09"]),
+                            BO10(a["tag_10"]), BO10(a["tag_11"]), BO10(a["tag_12"]),
+                            BO10(a["tag_13"]), BO10(a["tag_14"]), BO10(a["tag_15"]),
                             recid);
                         break;
                     default: /*Device_UID*/break;
@@ -977,6 +979,11 @@ catch
                 sqlCommand.CommandText = "SELECT t.name FROM sys.columns AS c JOIN sys.types AS t ON c.user_type_id = t.user_type_id WHERE c.object_id = OBJECT_ID('"+tableNameI+"') and c.name = '" + fieldName + "'";
                 Object t = sqlCommand.ExecuteScalar();
                 return t.ToString();
+            }
+
+            string BO10(object ob)
+            {
+                return ob.ToString() == "True" ? "1" : "0";
             }
 
             if (recid == 0)
@@ -1018,7 +1025,7 @@ catch
 
             //ushort code2 = client.Subscribe(new string[] { "flespi/state/gw/devices/361201" }, new byte[] { 2 });
             //ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/settings/canbus" }, new byte[] { 2 });
-            ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361201/settings/canbus" }, new byte[] { 2 });
+            ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361201/settings/headpack1" }, new byte[] { 2 });
 
             //ushort code3 = client.Subscribe(new string[] { "flespi/state/gw/devices/361201/settings/network_sim1" }, new byte[] { 2 });
 

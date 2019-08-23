@@ -168,22 +168,23 @@ namespace flespi_simle
         
         /**/
         //
-        static void test_zero()
+        static void Messages(string json)
         {
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            string json = Utils.ReadFile("json3i.txt");
+            //Utils.Print("Messages.txt", json);
+            //string json = Utils.ReadFile("json3i.txt");
             dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
             Dictionary<string, SqlDbType> fields = new Dictionary<string, SqlDbType>
             {
-               {"absolute_acceleration", SqlDbType.Int},//0
+               {"absolute_acceleration", SqlDbType.Real},//0
                {"alarm_event", SqlDbType.Bit },//1
                {"alarm_mode_status", SqlDbType.Bit},//2
-               {"brake_acceleration", SqlDbType.Int},//3
+               {"brake_acceleration", SqlDbType.Real},//3
                { "bump_acceleration",SqlDbType.Real },//4
                { "channel_id", SqlDbType.Int},//5
-               { "device_id", SqlDbType.Int},//6
-               { "device_name",SqlDbType.VarChar },//7
-               { "device_type_id",SqlDbType.Int },//8
+               { "device_uid", SqlDbType.Int},//6
+               //{ "device_name",SqlDbType.VarChar },//7
+               //{ "device_type_id",SqlDbType.Int },//8
                { "engine_ignition_status",SqlDbType.Bit },//9
                 { "external_powersource_voltage",SqlDbType.Real },//10
                 { "external_powersource_voltage_range_outside_status",SqlDbType.Bit },//11
@@ -212,7 +213,7 @@ namespace flespi_simle
                 { "server_timestamp",SqlDbType.Real },//34
                 { "shock_event",SqlDbType.Bit },//35
                 { "timestamp",SqlDbType.BigInt },//36
-                { "turn_acceleration",SqlDbType.Int },//37
+                { "turn_acceleration",SqlDbType.Real },//37
                 { "x_acceleration",SqlDbType.Real },//38
                 { "y_acceleration",SqlDbType.Real },//39
                 { "z_acceleration",SqlDbType.Real }//40
@@ -249,9 +250,12 @@ namespace flespi_simle
                 {
                     //sqlCommand.Parameters.Add("@[" + field.Key + "]", field.Value);
                     //sqlCommand.Parameters["@[" + field.Key + "]"].Value = a[field.Key].ToString();
+                    string fieldName = field.Key.Replace('_', '.');
+                    if (field.Key == "device_uid")
+                        fieldName = "device.id";
                     sqlCommand.Parameters.Add("@p"+rows.ToString(), field.Value);
-                    sqlCommand.Parameters["@p"+rows.ToString()].Value = a[field.Key].ToString();
-                    Utils.Print("log.txt", field.Key + " = " +a[field.Key].ToString());
+                    sqlCommand.Parameters["@p"+rows.ToString()].Value = a[fieldName].ToString();
+                    Utils.Print("log.txt", field.Key + " = " +a[fieldName].ToString());
                     rows++;
                     if (rows == rmax) break;
                 }
@@ -755,10 +759,11 @@ catch
         }
         static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
-            settings(e.Topic, "{\"result\":[" + Encoding.UTF8.GetString(e.Message) + "]}");
+            /////settings(e.Topic, "{\"result\":[" + Encoding.UTF8.GetString(e.Message) + "]}");
             //zu.Print("received.txt", "Received = " + Encoding.UTF8.GetString(e.Message) + " on topic " + e.Topic);
             //zu.Print("Received.txt", Encoding.UTF8.GetString(e.Message) + " " + e.Topic);
             ///// работает test3("{\"result\":["+Encoding.UTF8.GetString(e.Message)+"]}");
+            Messages("{\"result\":[" + Encoding.UTF8.GetString(e.Message) + "]}");
         }
         static void client_MqttMsgUnsubscribed(object sender, MqttMsgUnsubscribedEventArgs e)
         {
@@ -1021,11 +1026,12 @@ catch
             Console.WriteLine(client.IsConnected ? "Connected" : "... там");
 
             //*** работает ***
-            //ushort code = client.Subscribe(new string[] { "flespi/message/gw/devices/361202" }, new byte[] { 2 });
+            ushort code0 = client.Subscribe(new string[] { "flespi/message/gw/devices/361202" }, new byte[] { 2 });
 
             //ushort code2 = client.Subscribe(new string[] { "flespi/state/gw/devices/361201" }, new byte[] { 2 });
             //ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/settings/canbus" }, new byte[] { 2 });
-            ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361201/settings/headpack1" }, new byte[] { 2 });
+            /*работает!*/
+            /////ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361201/settings/headpack1" }, new byte[] { 2 });
 
             //ushort code3 = client.Subscribe(new string[] { "flespi/state/gw/devices/361201/settings/network_sim1" }, new byte[] { 2 });
 

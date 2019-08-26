@@ -33,62 +33,76 @@ namespace flespi_simle
         {
             //string conStr = Properties.Settings.Default.Connection;
 
-            Utils.Print(log, conStr);
+            Utils.Print(log, "Строка подключения " + conStr + ". Находится в flespi_simle.exe.config");
+            Utils.Print(log, "Журнал пишется в " + log);
 
             Utils.Print(log, "Start " + DateTime.Now.ToString());
 
-            string[] menu =
+            if (args.Length < 1)
             {
-                "Esc. Exit",
-                "1. Get collection of devices matching filter parameters",
-                "2. Get device logs records",
-                "3. Get device messages (Can take a long time!)",
-                "4. Get settings collection",
-                "5. Get device telemetry",
-                "6. Get collection of channels matching filter parameters",
-                "7. Create new device",
-                "8. List device messages snapshots",
-                "9. Fetch device messages snapshot",
-                "a. Change existing devices properties",
-                "b. Calculate devices's intervals",
-                "c. Push new command to change setting value",
-                "d. Delete selected devices",
-                "e. Reset setting value",
-                "f. Get specified modems info."
-            };
-            ConsoleKeyInfo ch;
-            do
-            {
-                foreach (var m in menu)
-                {
-                    Console.WriteLine(m);
+                Utils.Print(log, "Не... Так не пойдет. Укажите параметр (topic), Например:");
+                Utils.Print(log, "flespi/state/gw/devices/361201/settings/headpack1");
+                Utils.Print(log, "или там");
+                Utils.Print(log, "flespi/message/gw/devices/361202");
+                _ = Console.ReadKey();
+                return;
+            }
 
-                }
-                ch = Console.ReadKey();
-                Console.WriteLine();
-                //int menuitem = Convert.ToInt32(ch.KeyChar);
-                //if (menuitem != 27)
-                //    zu.Print(log, "Selected " + menu[(menuitem-48)]);
-                switch (ch.KeyChar)
-                {
-                    case '1': Client("https://flespi.io/gw/devices/all"); break;
-                    case '2': Client("https://flespi.io/gw/devices/361201/logs"); break;
-                    case '3': Client("https://flespi.io/gw/devices/361202/messages"); break;
-                    case '4': Client("https://flespi.io/gw/devices/all/settings/all"); break;
-                    case '5': Client("https://flespi.io/gw/devices/361201/telemetry"); break;
-                    case '6': Client("https://flespi.io/gw/channels/all"); break;
-                    case '7': ClientPost("https://flespi.io/gw/devices"); break;
-                    case '8': Client("https://flespi.io/gw/devices/all/snapshots"); break;
-                    case '9': Client("https://flespi.io/gw/devices/361201/snapshots/1563908110"); break;
-                    case 'a': ClientPut("https://flespi.io/gw/devices", "DoesNotExist"); break;
-                    case 'b': ClientPost("https://flespi.io/gw/devices/361201/calculate"); break;
-                    case 'c': ClientPut("https://flespi.io/gw/devices/361201/settings/DoesNotExist"); break;
-                    case 'd': ClientDelete("https://flespi.io/gw/devices", "DoesNotExist"); break;
-                    case 'e': ClientDelete("https://flespi.io/gw/devices/361201/settings", "DoesNotExist"); break;
-                    case 'f': Client("https://flespi.io/gw/modems/6624"); break;
-                    default: Console.WriteLine("Что это было?"); break;
-                }
-            } while (ch.Key != ConsoleKey.Escape);
+            foreach(var arg in args)
+                Utils.Print(log, arg);
+
+            //string[] menu =
+            //{
+            //    "Esc. Exit",
+            //    "1. Get collection of devices matching filter parameters",
+            //    "2. Get device logs records",
+            //    "3. Get device messages (Can take a long time!)",
+            //    "4. Get settings collection",
+            //    "5. Get device telemetry",
+            //    "6. Get collection of channels matching filter parameters",
+            //    "7. Create new device",
+            //    "8. List device messages snapshots",
+            //    "9. Fetch device messages snapshot",
+            //    "a. Change existing devices properties",
+            //    "b. Calculate devices's intervals",
+            //    "c. Push new command to change setting value",
+            //    "d. Delete selected devices",
+            //    "e. Reset setting value",
+            //    "f. Get specified modems info."
+            //};
+            //ConsoleKeyInfo ch;
+            //do
+            //{
+            //    foreach (var m in menu)
+            //    {
+            //        Console.WriteLine(m);
+
+            //    }
+            //    ch = Console.ReadKey();
+            //    Console.WriteLine();
+            //    //int menuitem = Convert.ToInt32(ch.KeyChar);
+            //    //if (menuitem != 27)
+            //    //    zu.Print(log, "Selected " + menu[(menuitem-48)]);
+            //    switch (ch.KeyChar)
+            //    {
+            //        case '1': Client("https://flespi.io/gw/devices/all"); break;
+            //        case '2': Client("https://flespi.io/gw/devices/361201/logs"); break;
+            //        case '3': Client("https://flespi.io/gw/devices/361202/messages"); break;
+            //        case '4': Client("https://flespi.io/gw/devices/all/settings/all"); break;
+            //        case '5': Client("https://flespi.io/gw/devices/361201/telemetry"); break;
+            //        case '6': Client("https://flespi.io/gw/channels/all"); break;
+            //        case '7': ClientPost("https://flespi.io/gw/devices"); break;
+            //        case '8': Client("https://flespi.io/gw/devices/all/snapshots"); break;
+            //        case '9': Client("https://flespi.io/gw/devices/361201/snapshots/1563908110"); break;
+            //        case 'a': ClientPut("https://flespi.io/gw/devices", "DoesNotExist"); break;
+            //        case 'b': ClientPost("https://flespi.io/gw/devices/361201/calculate"); break;
+            //        case 'c': ClientPut("https://flespi.io/gw/devices/361201/settings/DoesNotExist"); break;
+            //        case 'd': ClientDelete("https://flespi.io/gw/devices", "DoesNotExist"); break;
+            //        case 'e': ClientDelete("https://flespi.io/gw/devices/361201/settings", "DoesNotExist"); break;
+            //        case 'f': Client("https://flespi.io/gw/modems/6624"); break;
+            //        default: Console.WriteLine("Что это было?"); break;
+            //    }
+            //} while (ch.Key != ConsoleKey.Escape);
             //test1();
             //test2();
             //test3();
@@ -97,7 +111,7 @@ namespace flespi_simle
             //test4();
             //test6();
             //test8();
-            ClientReceiveTest1();
+            ClientReceiveTest1(args[0]);
             //Tests.ClientReceiveTest11(client_MqttMsgPublished, null, null, null);
             //SendTicksRequest();
             //test_zero();
@@ -1008,7 +1022,7 @@ catch
 
             //client.Unsubscribe(new string[] { "flespi/state/gw/devices/361202/settings/guard" });
         }
-        static void ClientReceiveTest1()
+        static void ClientReceiveTest1(string topic = "flespi/message/gw/devices/361202")
         {
             string BrokerAddress = "mqtt.flespi.io";
             client = new MqttClient(BrokerAddress);
@@ -1026,7 +1040,7 @@ catch
             Console.WriteLine(client.IsConnected ? "Connected" : "... там");
 
             //*** работает ***
-            ushort code0 = client.Subscribe(new string[] { "flespi/message/gw/devices/361202" }, new byte[] { 2 });
+            ushort code0 = client.Subscribe(new string[] { topic }, new byte[] { 2 });
 
             //ushort code2 = client.Subscribe(new string[] { "flespi/state/gw/devices/361201" }, new byte[] { 2 });
             //ushort code = client.Subscribe(new string[] { "flespi/state/gw/devices/361202/settings/canbus" }, new byte[] { 2 });

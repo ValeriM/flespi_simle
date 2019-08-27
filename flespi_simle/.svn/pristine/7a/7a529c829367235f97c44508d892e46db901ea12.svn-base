@@ -25,5 +25,9 @@ namespace flespi_simle
             reader.Close();
             return ret;
         }
+        static void Parse2(string topic, string message)
+        {
+
+        }
     }
 }

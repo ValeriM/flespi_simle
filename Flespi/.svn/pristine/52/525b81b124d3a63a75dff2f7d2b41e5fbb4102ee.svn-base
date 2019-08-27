@@ -5,6 +5,21 @@ namespace flespi_simle
 {
     public static class Utils
     {
+        static void test()
+        {
+            string json = @"{
+                'Email': 'james@example.com',
+                'Active': true,
+                'CreatedDate': '2013-01-20T00:00:00Z',
+                'Roles': [
+                {'User':'111','Admin':'123'}
+                ]}";
+
+            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
+            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
+            string result = dobj["Email"].ToString();
+            object result1 = dobj["Roles"][0]["User"];
+        }
         public static void Print(string filename, string line, bool console = true)
         {
             if (console)
@@ -24,6 +39,10 @@ namespace flespi_simle
             ret = reader.ReadToEnd();
             reader.Close();
             return ret;
+        }
+        static void Parse2(string topic, string message)
+        {
+
         }
     }
 }

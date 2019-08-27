@@ -14,7 +14,7 @@ namespace flespi_simle
 {
     class Program
     {
-        //static readonly string token = "Authorization: FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";
+        static readonly string token = "Authorization: FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";
         static readonly string nudeToken = "FlespiToken Vo6wSNjDEM19qzUdq9qbwZugZPmPl3N4hHq0lAtPalMqIwuYuKZQxiUnX7060B17";
         //token = "Authorization: FlespiToken UIy8bexWRWLVX3H3yJFCkycRTNI3xRognMeoOBbvlKf8EK20kvrsRraz4GsqnGwB";
         static readonly string log = "flespi_simle.txt";
@@ -28,110 +28,22 @@ namespace flespi_simle
             Utils.Print(log, "Журнал пишется в " + log);
             Utils.Print(log, "Запуск " + DateTime.Now.ToString());
 
-            //if (args.Length < 1)
-            //{
-            //    Utils.Print(log, "Не... Так не пойдет. Укажите параметр (topic), Например:");
-            //    Utils.Print(log, "flespi/state/gw/devices/361201/settings/headpack1");
-            //    Utils.Print(log, "или там");
-            //    Utils.Print(log, "flespi/message/gw/devices/361202");
-            //    _ = Console.ReadKey();
-            //    return;
-            //}
+            if (args.Length < 1)
+            {
+                Utils.Print(log, "Не... Так не пойдет. Укажите параметр (topic), Например:");
+                Utils.Print(log, "flespi/state/gw/devices/361201/settings/headpack1");
+                Utils.Print(log, "или там");
+                Utils.Print(log, "flespi/message/gw/devices/361202");
+                _ = Console.ReadKey();
+                return;
+            }
 
             foreach(var arg in args)
                 Utils.Print(log, arg);
 
-            //ClientReceiveTest1(args[0]);
-            ClientReceiveTest1("flespi/message/gw/devices/+");
-            //ClientReceiveTest1("flespi/state/gw/devices/361201/settings/+");
+            ClientReceiveTest1(args[0]);
         }
 
-        /*
-        */
-        static void MessagesLong(string json)
-        {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
-
-            SqlConnection sqlConnection = new SqlConnection(conStr);
-            sqlConnection.Open();
-            SqlCommand sqlCommand = new SqlCommand("", sqlConnection);
-            int rows = 0;
-            
-
-            foreach (var a in dobj["result"])
-            {
-                foreach (var v in a)
-                {
-                    Utils.Print(log, a["device.id"].ToString() + " " + v.Key.ToString().Replace('.', '_') + " " + v.Value.ToString());
-                    string sql = "Insert Into Fields (device_uid, fieldname, fieldvalue) Values ("+a["device.id"].ToString() +", '" + v.Key.ToString().Replace('.', '_') + "', '" + v.Value.ToString() + "')";
-                    Utils.Print(log, sql);
-                    sqlCommand.CommandText = sql;
-                    rows += sqlCommand.ExecuteNonQuery();
-                }
-                
-                //a["fieldName"].ToString();
-                
-            }
-           
-            sqlConnection.Close();
-        }
-        static void settings(string topic, string json)
-        {
-            JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
-            dynamic dobj = jsonSerializer.Deserialize<dynamic>(json);
-
-            string[] headers = topic.Split('/');
-
-            string device_id = headers[4];
-            string field = headers[6];
-
-            SqlConnection sqlConnection = new SqlConnection(conStr);
-            sqlConnection.Open();
-            SqlCommand sqlCommand = new SqlCommand("", sqlConnection);
-            int rows = 0;
-
-
-            foreach (var a in dobj["result"])
-            {
-                foreach (var v in a)
-                {
-                    Type tp = v.Value.GetType();
-                    int _case = 0;
-                    if (tp == typeof(Int32) || tp == typeof(String) || tp == typeof(Boolean))
-                        _case = 1;
-                    switch(_case)
-                    {
-                        case 1:
-                            {
-                                Utils.Print(log, device_id + " " + v.Key.ToString().Replace('.', '_') + " " + v.Value.ToString());
-                                string sql = "Insert Into SettingsFields (device_uid, fieldname, fieldvalue) Values (" + device_id + ", '" + field + "_" + v.Key.ToString().Replace('.', '_') + "', '" + v.Value.ToString() + "')";
-                                Utils.Print(log, sql);
-                                sqlCommand.CommandText = sql;
-                                rows += sqlCommand.ExecuteNonQuery();
-                            }
-                            break;
-                        default:
-                            foreach (var p in v.Value)
-                            {
-                                string sql = "Insert Into SettingsFields (device_uid, fieldname, fieldvalue) Values (" + device_id + ", '" + field + "_" + v.Key.ToString() + "_" + p.Key.ToString() + "', '" + p.Value.ToString() + "')";
-                                Utils.Print(log, sql);
-                                sqlCommand.CommandText = sql;
-                                rows += sqlCommand.ExecuteNonQuery();
-                            }
-                            break;
-                    }
-                        
-                }
-
-                //a["fieldName"].ToString();
-
-            }
-
-            sqlConnection.Close();
-        }
-        /*
-        */
         static void Messages(string json)
         {
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
@@ -178,20 +90,7 @@ namespace flespi_simle
                 { "turn_acceleration",SqlDbType.Real },//37
                 { "x_acceleration",SqlDbType.Real },//38
                 { "y_acceleration",SqlDbType.Real },//39
-                { "z_acceleration",SqlDbType.Real },//40
-                { "ain_1", SqlDbType.Int}, //41
-                { "ain_2", SqlDbType.Int},//42
-                { "battery_voltage", SqlDbType.Real},//43
-                { "device_temperature", SqlDbType.Int},//44
-                { "hardware_version_enum", SqlDbType.Int},//45
-                { "software_version_enum", SqlDbType.Int},//46
-                { "rs232_sensor_value_0", SqlDbType.Int},//47
-                { "rs485_fuel_sensor_level_0", SqlDbType.Int},//48
-                { "rs485_fuel_sensor_level_1", SqlDbType.Int},//49
-                { "rs485_fuel_sensor_level_2", SqlDbType.Int},//50
-                { "rs485_fuel_sensor_temperature_0", SqlDbType.Int},//51
-                { "rs485_fuel_sensor_temperature_1", SqlDbType.Int},//52
-                { "rs485_fuel_sensor_temperature_2", SqlDbType.Int}//53
+                { "z_acceleration",SqlDbType.Real }//40
             };
 
             SqlConnection sqlConnection = new SqlConnection(conStr);
@@ -215,40 +114,26 @@ namespace flespi_simle
 
             rows = 0;
 
-            bool error = false;
-
             foreach (var a in dobj["result"])
             {
-                
                 foreach (var field in fields)
                 {
                     string fieldName = field.Key.Replace('_', '.');
                     if (field.Key == "device_uid")
                         fieldName = "device.id";
                     sqlCommand.Parameters.Add("@p"+rows.ToString(), field.Value);
-                    try
-                    {
-                        sqlCommand.Parameters["@p" + rows.ToString()].Value = a[fieldName].ToString();
-                        Utils.Print(log, field.Key + " = " + a[fieldName].ToString());
-                    }
-                    catch
-                    {
-                        Utils.Print(log, "Нет такого ключа = " + fieldName);
-                        error = true;
-                    }
-                    if (error) break;
+                    sqlCommand.Parameters["@p"+rows.ToString()].Value = a[fieldName].ToString();
+                    Utils.Print(log, field.Key + " = " +a[fieldName].ToString());
                     rows++;
                 }
-                if (error) break;
             }
-            if (!error)
-                rows += sqlCommand.ExecuteNonQuery();
+            rows += sqlCommand.ExecuteNonQuery();
             sqlConnection.Close();
         }
 
         static void client_MqttMsgPublished(object sender, MqttMsgPublishedEventArgs e)
         {
-            Utils.Print(log, "MessageId = " + e.MessageId + " Published = " + e.IsPublished);
+            Console.WriteLine("MessageId = " + e.MessageId + " Published = " + e.IsPublished);
         }
 
         static void client_MqttMsgSubscribed(object sender, MqttMsgSubscribedEventArgs e)
@@ -275,7 +160,7 @@ namespace flespi_simle
             Utils.Print(log, "Unsubscribed for id = " + e.MessageId);
         }
 
-        static void settings1(string topic, string message)
+        static void settings(string topic, string message)
         {
             JavaScriptSerializer jsonSerializer = new JavaScriptSerializer();
             string json = message;

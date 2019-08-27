@@ -145,53 +145,51 @@ namespace flespi_simle
                { "bump_acceleration",SqlDbType.Real },//4
                { "channel_id", SqlDbType.Int},//5
                { "device_uid", SqlDbType.Int},//6
-               //{ "device_name",SqlDbType.VarChar },//7
-               //{ "device_type_id",SqlDbType.Int },//8
                { "engine_ignition_status",SqlDbType.Bit },//9
-                { "external_powersource_voltage",SqlDbType.Real },//10
-                { "external_powersource_voltage_range_outside_status",SqlDbType.Bit },//11
-                { "geofence_status",SqlDbType.Bit },//12
-                { "gnss_antenna_status",SqlDbType.Bit },//13
-                { "gnss_type",SqlDbType.VarChar },//14
-                { "gsm_signal_level",SqlDbType.Int },//15
-                { "gsm_sim_status",SqlDbType.Bit },//16
-                { "ibutton_connected_status",SqlDbType.Bit },//17
-                { "ident",SqlDbType.VarChar },//18
-                { "incline_event",SqlDbType.Bit },//19
-                { "internal_battery_voltage_limit_lower_status",SqlDbType.Bit },//20
-                { "internal_bus_supply_voltage_range_outside_status",SqlDbType.Bit },//21
-                { "movement_status",SqlDbType.Bit },//22
-                { "peer",SqlDbType.VarChar },//23
-                { "position_altitude",SqlDbType.Real },//24
-                { "position_direction",SqlDbType.Real },//25
-                { "position_hdop",SqlDbType.Real },//26
-                { "position_latitude",SqlDbType.Real },//27
-                { "position_longitude",SqlDbType.Real },//28
-                { "position_satellites",SqlDbType.Real },//29
-                { "position_speed",SqlDbType.Real },//30
-                { "position_valid",SqlDbType.Bit },//31
-                { "protocol_id",SqlDbType.Int },//32
-                { "record_seqnum",SqlDbType.Int },//33
-                { "server_timestamp",SqlDbType.Real },//34
-                { "shock_event",SqlDbType.Bit },//35
-                { "timestamp",SqlDbType.BigInt },//36
-                { "turn_acceleration",SqlDbType.Real },//37
-                { "x_acceleration",SqlDbType.Real },//38
-                { "y_acceleration",SqlDbType.Real },//39
-                { "z_acceleration",SqlDbType.Real },//40
-                { "ain_1", SqlDbType.Int}, //41
-                { "ain_2", SqlDbType.Int},//42
-                { "battery_voltage", SqlDbType.Real},//43
-                { "device_temperature", SqlDbType.Int},//44
-                { "hardware_version_enum", SqlDbType.Int},//45
-                { "software_version_enum", SqlDbType.Int},//46
-                { "rs232_sensor_value_0", SqlDbType.Int},//47
-                { "rs485_fuel_sensor_level_0", SqlDbType.Int},//48
-                { "rs485_fuel_sensor_level_1", SqlDbType.Int},//49
-                { "rs485_fuel_sensor_level_2", SqlDbType.Int},//50
-                { "rs485_fuel_sensor_temperature_0", SqlDbType.Int},//51
-                { "rs485_fuel_sensor_temperature_1", SqlDbType.Int},//52
-                { "rs485_fuel_sensor_temperature_2", SqlDbType.Int}//53
+               { "external_powersource_voltage",SqlDbType.Real },//10
+               { "external_powersource_voltage_range_outside_status",SqlDbType.Bit },//11
+               { "geofence_status",SqlDbType.Bit },//12
+               { "gnss_antenna_status",SqlDbType.Bit },//13
+               { "gnss_type",SqlDbType.VarChar },//14
+               { "gsm_signal_level",SqlDbType.Int },//15
+               { "gsm_sim_status",SqlDbType.Bit },//16
+               { "ibutton_connected_status",SqlDbType.Bit },//17
+               { "ident",SqlDbType.VarChar },//18
+               { "incline_event",SqlDbType.Bit },//19
+               { "internal_battery_voltage_limit_lower_status",SqlDbType.Bit },//20
+               { "internal_bus_supply_voltage_range_outside_status",SqlDbType.Bit },//21
+               { "movement_status",SqlDbType.Bit },//22
+               { "peer",SqlDbType.VarChar },//23
+               { "position_altitude",SqlDbType.Real },//24
+               { "position_direction",SqlDbType.Real },//25
+               { "position_hdop",SqlDbType.Real },//26
+               { "position_latitude",SqlDbType.Real },//27
+               { "position_longitude",SqlDbType.Real },//28
+               { "position_satellites",SqlDbType.Real },//29
+               { "position_speed",SqlDbType.Real },//30
+               { "position_valid",SqlDbType.Bit },//31
+               { "protocol_id",SqlDbType.Int },//32
+               { "record_seqnum",SqlDbType.Int },//33
+               { "server_timestamp",SqlDbType.Real },//34
+               { "shock_event",SqlDbType.Bit },//35
+               { "timestamp",SqlDbType.Real },//36
+               { "turn_acceleration",SqlDbType.Real },//37
+               { "x_acceleration",SqlDbType.Real },//38
+               { "y_acceleration",SqlDbType.Real },//39
+               { "z_acceleration",SqlDbType.Real },//40
+               { "ain_1", SqlDbType.Int}, //41
+               { "ain_2", SqlDbType.Int},//42
+               { "battery_voltage", SqlDbType.Real},//43
+               { "device_temperature", SqlDbType.Int},//44
+               { "hardware_version_enum", SqlDbType.Int},//45
+               { "software_version_enum", SqlDbType.Int},//46
+               { "rs232_sensor_value_0", SqlDbType.Int},//47
+               { "rs485_fuel_sensor_level_0", SqlDbType.Int},//48
+               { "rs485_fuel_sensor_level_1", SqlDbType.Int},//49
+               { "rs485_fuel_sensor_level_2", SqlDbType.Int},//50
+               { "rs485_fuel_sensor_temperature_0", SqlDbType.Int},//51
+               { "rs485_fuel_sensor_temperature_1", SqlDbType.Int},//52
+               { "rs485_fuel_sensor_temperature_2", SqlDbType.Int}//53
             };
 
             SqlConnection sqlConnection = new SqlConnection(conStr);
@@ -219,7 +217,6 @@ namespace flespi_simle
 
             foreach (var a in dobj["result"])
             {
-                
                 foreach (var field in fields)
                 {
                     string fieldName = field.Key.Replace('_', '.');
@@ -228,12 +225,33 @@ namespace flespi_simle
                     sqlCommand.Parameters.Add("@p"+rows.ToString(), field.Value);
                     try
                     {
-                        sqlCommand.Parameters["@p" + rows.ToString()].Value = a[fieldName].ToString();
-                        Utils.Print(log, field.Key + " = " + a[fieldName].ToString());
+                        string tmp = "";
+                        if (a.ContainsKey(fieldName))
+                        {
+                            tmp = a[fieldName].ToString();
+                            if (field.Value == SqlDbType.Bit)
+                                tmp = Utils.BO10(tmp);
+                        }
+                        else
+                        {
+                            if (field.Value == SqlDbType.Bit || field.Value == SqlDbType.Int)
+                                tmp = "0";
+                            if (field.Value == SqlDbType.Real)
+                                tmp = "0,0";
+                            Utils.Print(log, "Warning: Нет такого ключа = " + fieldName);
+                        }
+                        if (field.Value == SqlDbType.Bit || field.Value == SqlDbType.Int)
+                            sqlCommand.Parameters["@p" + rows.ToString()].Value = Convert.ToInt32(tmp);
+                        else
+                            if (field.Value == SqlDbType.Real)
+                                sqlCommand.Parameters["@p" + rows.ToString()].Value = Convert.ToDouble(tmp);
+                            else
+                                sqlCommand.Parameters["@p" + rows.ToString()].Value = tmp;
+                        Utils.Print(log, "@p"+rows.ToString() + "=" + field.Key + " = " + tmp);
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        Utils.Print(log, "Нет такого ключа = " + fieldName);
+                        Utils.Print(log, "*** ОШИБКА ***" + ex.Message);
                         error = true;
                     }
                     if (error) break;
@@ -242,7 +260,16 @@ namespace flespi_simle
                 if (error) break;
             }
             if (!error)
-                rows += sqlCommand.ExecuteNonQuery();
+            {
+                //try
+                {
+                    rows += sqlCommand.ExecuteNonQuery();
+                }
+                /*catch(Exception ex)
+                {
+                    Utils.Print(log, ex.Message);
+                }*/
+            }
             sqlConnection.Close();
         }
 

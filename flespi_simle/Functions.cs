@@ -25,5 +25,9 @@ namespace flespi_simle
             reader.Close();
             return ret;
         }
+        public static string BO10(object ob)
+        {
+            return ob.ToString() == "True" ? "1" : "0";
+        }
     }
 }
